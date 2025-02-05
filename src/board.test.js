@@ -1,4 +1,4 @@
-import { Gameboard } from "./classes";
+import { Gameboard, Ship } from "./classes";
 
 const input = {
   name: "Player One",
@@ -17,5 +17,20 @@ describe("Gameboard Test", function () {
   test("Gameboard output", () => {
     const board = new Gameboard(input);
     expect(board.name).toEqual(input.name);
+  });
+
+  test("gameboard as instance constructor", () => {
+    const gbOutput = {
+      name: "Player One",
+      dimension: 10,
+      gridMap: new Map(),
+      occupied: [],
+      hitMap: {
+        hit: [],
+        miss: [],
+      },
+    };
+    const board = new Gameboard(input);
+    expect(board).toEqual(gbOutput);
   });
 });

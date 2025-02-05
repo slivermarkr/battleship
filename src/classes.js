@@ -1,3 +1,4 @@
+import { generateRandomNum } from "./help.js";
 export class Ship {
   constructor({ size, index, orientation, cluster } = {}) {
     this.size = size;
@@ -24,5 +25,11 @@ export class Gameboard {
   constructor({ name, dimension }) {
     this.name = name;
     this.dimension = dimension;
+    this.gridMap = new Map();
+    this.occupied = [];
+    this.hitMap = {
+      hit: [],
+      miss: [],
+    };
   }
 }
