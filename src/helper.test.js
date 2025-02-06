@@ -3,6 +3,7 @@ import {
   isValidCoor,
   generateGridArray,
   convertCoorToInt,
+  getCoorAdjacentList,
 } from "./help";
 
 describe.skip("generateRandomNumber", function () {
@@ -44,7 +45,14 @@ describe("convert 'A,1' form to '[1,1]' form", () => {
     expect(convertCoorToInt("J,10")).toEqual([10, 10]);
     expect(convertCoorToInt("D,5")).toEqual([4, 5]);
     expect(convertCoorToInt("F,9")).toEqual([6, 9]);
-    expect(convertCoorToInt("0, 0")).toBe(undefined);
+  });
+  test("throw error if input was INVALID COORDINATE", () => {
+    expect(() => convertCoorToInt("0,0")).toThrow(
+      new Error("NOT VALID COORDINATE")
+    );
+    expect(() => convertCoorToInt("Z,Z")).toThrow(
+      new Error("NOT VALID COORDINATE")
+    );
   });
 });
 

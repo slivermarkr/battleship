@@ -1,3 +1,4 @@
+const DIMENSION = 10;
 export function generateRandomNum() {
   return Math.floor(Math.random() * 10);
 }
@@ -21,7 +22,9 @@ export function generateGridArray(DIMENSION) {
 }
 
 export function convertCoorToInt(coor) {
-  if (!isValidCoor(coor)) throw new Error(`"${coor}" is NOT VALID COORDINATE`);
+  if (!isValidCoor(coor)) {
+    throw new Error("NOT VALID COORDINATE");
+  }
   const res = coor.split(",");
   res[0] = res[0].charCodeAt(0) - 64;
   res[1] = parseInt(res[1]);
@@ -30,6 +33,33 @@ export function convertCoorToInt(coor) {
 
 export function getCoorAdjacentList(coor) {
   if (!isValidCoor(coor)) throw new Error(`"${coor}" is NOT VALID COORDINATE`);
-  const adj = [];
   const [row, col] = convertCoorToInt(coor);
+  const possibleBuffer = [
+    [-1, -1],
+    [-1, 0],
+    [-1, 1],
+    [0, -1],
+    // [0, 0],
+    [0, 1],
+    [1, -1],
+    [1, 0],
+    [1, 1],
+  ];
+  console.log(row);
+  console.log(col);
+  // 1 , 1
+  // row - 1 , col - 1
+  return possibleBuffer
+    .map(([x, y]) => [row + x, col + y])
+    .filter(
+      ([nRow, nCol]) =>
+        nRow >= 1 && nRow <= DIMENSION && nCol <= DIMENSION && nCol >= 1
+    )
+    .map(([rChar, cNum]) => {
+      return `${String.fromCharCode(rChar + 64)},${cNum}`;
+    });
 }
+
+const coor = "J,10";
+const res = getCoorAdjacentList(coor);
+console.log(res);

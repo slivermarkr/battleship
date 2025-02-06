@@ -59,7 +59,6 @@ export class GridCell {
 
   getAdjacentList() {
     const [row, col] = convertCoorToInt(this.coor); //ex. "A,1" to "[1,1]"
-    LL;
     return row, col;
   }
 }
