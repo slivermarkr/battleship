@@ -1,7 +1,4 @@
-import { GridCell } from "./classes.js";
-
-export { GridCell } from "./classes";
-export { isValidCoor } from "./help";
+import GridCell from "../classes/cell";
 
 const output = {
   coor: "A,1",
@@ -41,6 +38,19 @@ describe("GridCell test", () => {
 
   test("cell.getAdjacentList()", () => {
     const cell = new GridCell(output.coor);
-    expect(cell.getAdjacentList()).toEqual();
+    expect(cell.getAdjacentList()).toEqual(["A,2", "B,1", "B,2"]);
+  });
+
+  test("cell.getAdjacentList()", () => {
+    const cell = new GridCell("J,10");
+    expect(cell.getAdjacentList()).toEqual(["I,9", "I,10", "J,9"]);
+  });
+
+  test("throw ERROR on INVALID COOR cell.getAdjacentList()", () => {
+    const cell = new GridCell("Z,11");
+    // expect(cell.getAdjacentList()).toEqual(["I,9", "I,10", "J,9"]);
+    expect(() => cell.getAdjacentList("Z,11")).toThrow(
+      new Error(`"Z,11" is NOT VALID COORDINATE`)
+    );
   });
 });

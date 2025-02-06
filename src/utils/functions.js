@@ -45,10 +45,7 @@ export function getCoorAdjacentList(coor) {
     [1, 0],
     [1, 1],
   ];
-  console.log(row);
-  console.log(col);
-  // 1 , 1
-  // row - 1 , col - 1
+
   return possibleBuffer
     .map(([x, y]) => [row + x, col + y])
     .filter(
@@ -56,10 +53,11 @@ export function getCoorAdjacentList(coor) {
         nRow >= 1 && nRow <= DIMENSION && nCol <= DIMENSION && nCol >= 1
     )
     .map(([rChar, cNum]) => {
-      return `${String.fromCharCode(rChar + 64)},${cNum}`;
+      const coor = `${String.fromCharCode(rChar + 64)},${cNum}`;
+      return isValidCoor(coor) ? coor : "ERROR: NOT VALID COOR";
     });
 }
 
-const coor = "J,10";
-const res = getCoorAdjacentList(coor);
-console.log(res);
+// const coor = "J,10";
+// const res = getCoorAdjacentList(coor);
+// console.log(res);

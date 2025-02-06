@@ -1,4 +1,4 @@
-import { Ship } from "./classes.js";
+import { Ship } from "../classes/ship";
 
 // Ship input
 const input = {
@@ -8,7 +8,7 @@ const input = {
   cluster: ["A,1", "A,2", "A,3"],
 };
 
-describe.skip("SHIP TEST", () => {
+describe("SHIP TEST", () => {
   test("size should be a num", () => {
     expect(input).toEqual({
       size: 3,
@@ -49,5 +49,24 @@ describe.skip("SHIP TEST", () => {
   test("cluster cannot go out of bounds", () => {
     const ship = new Ship(input);
     expect(ship.getCoorCluster().length).not.toBeGreaterThan(ship.size);
+  });
+
+  test("hitCount cannot be greater than the size", () => {
+    const ship = new Ship(input);
+    ship.isHit();
+    ship.isHit();
+    ship.isHit();
+    ship.isHit();
+    expect(ship.hitCount).not.toBeGreaterThan(ship.size);
+  });
+
+  test("reset ship", () => {
+    const ship = new Ship(input);
+    ship.isHit();
+    ship.isHit();
+    ship.isHit();
+    ship.resetShip();
+    expect(ship.hitCount).toBe(0);
+    expect(ship.cluster).toBe(undefined);
   });
 });

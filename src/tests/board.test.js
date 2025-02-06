@@ -1,4 +1,5 @@
-import { Gameboard, Ship } from "./classes";
+import { Gameboard } from "../classes/board";
+import GridCell from "../classes/cell";
 
 const input = {
   name: "Player One",
@@ -49,5 +50,47 @@ describe.skip("Gameboard Test", function () {
       expect(board.hitMap.miss).toContain(coor);
       expect(board.hitMap.hit).not.toContain(coor);
     }
+  });
+});
+
+describe("create GridMap use coordinate as key", () => {
+  const board = new Gameboard(input);
+  const firstCoor = "A,1";
+  const lastCoor = "J,10";
+  // board.gridMap.set(coor, new GridCell(coor));
+
+  const cell = new GridCell("A,1");
+  const lcell = new GridCell("J,10");
+
+  test("getting first cell", () => {
+    expect(board.gridMap.get(firstCoor)).toEqual(cell);
+  });
+
+  test("getting the adjacentList of first cell", () => {
+    expect(board.gridMap.get(firstCoor).getAdjacentList()).toEqual([
+      "A,2",
+      "B,1",
+      "B,2",
+    ]);
+  });
+
+  test("getting last cell", () => {
+    expect(board.gridMap.get(lastCoor)).toEqual(lcell);
+  });
+
+  test("getting the adjacentList of last cell", () => {
+    expect(board.gridMap.get(lastCoor).getAdjacentList()).toEqual([
+      "I,9",
+      "I,10",
+      "J,9",
+    ]);
+  });
+
+  test("test error on board.gridMap.get()", () => {
+    expect(board.gridMap.get("Z,11")).toBe(undefined);
+  });
+
+  test("board.gridMap.size === 100", () => {
+    expect(board.gridMap.size).toBe(100);
   });
 });
