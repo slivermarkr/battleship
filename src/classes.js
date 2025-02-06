@@ -1,4 +1,4 @@
-import { generateRandomNum } from "./help.js";
+import { generateRandomNum, convertCoorToInt } from "./help.js";
 export class Ship {
   constructor({ size, index, orientation, cluster } = {}) {
     this.size = size;
@@ -31,5 +31,35 @@ export class Gameboard {
       hit: [],
       miss: [],
     };
+  }
+
+  receiveAttack(coor) {
+    const cell = board.gridMap.get(coor);
+  }
+}
+
+export class GridCell {
+  constructor(coor) {
+    this.coor = coor;
+    this.isOcccupied = false;
+    this.isBuffer = false;
+    // this.shipData = undefined;
+    this.adjacentList = undefined;
+  }
+
+  takeShip(shipObj) {
+    this.shipData = shipObj;
+    this.isOccupied = true;
+    this.isBuffer = false;
+  }
+
+  getBuffer() {
+    return this.neighbors;
+  }
+
+  getAdjacentList() {
+    const [row, col] = convertCoorToInt(this.coor); //ex. "A,1" to "[1,1]"
+    LL;
+    return row, col;
   }
 }

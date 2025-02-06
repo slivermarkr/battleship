@@ -20,8 +20,16 @@ export function generateGridArray(DIMENSION) {
   return gridArray;
 }
 
-// const res = isValidCoor("Z,10");
-const res = generateGridArray(10);
+export function convertCoorToInt(coor) {
+  if (!isValidCoor(coor)) throw new Error(`"${coor}" is NOT VALID COORDINATE`);
+  const res = coor.split(",");
+  res[0] = res[0].charCodeAt(0) - 64;
+  res[1] = parseInt(res[1]);
+  return res;
+}
 
-console.log(res);
-console.log(isValidCoor(res[0]));
+export function getCoorAdjacentList(coor) {
+  if (!isValidCoor(coor)) throw new Error(`"${coor}" is NOT VALID COORDINATE`);
+  const adj = [];
+  const [row, col] = convertCoorToInt(coor);
+}
