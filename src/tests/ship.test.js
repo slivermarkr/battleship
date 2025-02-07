@@ -65,7 +65,7 @@ describe("SHIP TEST", () => {
     ship.isHit();
     ship.isHit();
     ship.isHit();
-    ship.resetShip();
+    ship.reset();
     expect(ship.hitCount).toBe(0);
     expect(ship.isSet).toBe(false);
     expect(ship.cluster).toBe(undefined);

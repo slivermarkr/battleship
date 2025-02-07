@@ -4,7 +4,7 @@ import {
   generateGridArray,
   convertCoorToInt,
   getCoorAdjacentList,
-} from "../utils/functions";
+} from "../utils/fn";
 
 describe("generateRandomNumber", function () {
   test("generateRandomNumber should not be > 10", () => {

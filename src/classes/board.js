@@ -1,5 +1,5 @@
-import { generateGridArray, isValidCoor } from "../utils/functions";
-import GridCell from "./cell";
+import { generateGridArray, isValidCoor } from "../utils/fn.js";
+import GridCell from "./cell.js";
 
 export class Gameboard {
   constructor({ name, dimension }) {
@@ -44,11 +44,15 @@ export class Gameboard {
       const cell = this.gridMap.get(coor);
       cell.takeShip(shipObj);
 
-      this.occupied.push(coor);
+      this.occupied = this.getOccupiedCells();
     }
   }
 
   getOccupiedCells() {
-    return this.occupied;
+    const res = [];
+    for (const cell of this.gridMap.values()) {
+      res.push(cell.coor);
+    }
+    return res;
   }
 }

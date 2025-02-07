@@ -1,7 +1,7 @@
 import { Gameboard } from "../classes/board";
 import Ship from "../classes/ship";
 import GridCell from "../classes/cell";
-import { isValidCoor } from "../utils/functions";
+import { isValidCoor } from "../utils/fn";
 
 const input = {
   name: "Player One",
@@ -146,6 +146,12 @@ describe("board.setShip(shipParams, coordinates)", function () {
     }
   });
 
+  it("on setShip(): ship.cluster === coordinates", () => {
+    for (const coor of coordinates) {
+      expect(board.gridMap.get(coor).shipData.cluster).toEqual(coordinates);
+    }
+  });
+
   it("ERROR is returned if shipObj.size !== coordinates.length", () => {
     const ship = new Ship({ size: 1, index: 2 });
     expect(() => {
@@ -155,10 +161,15 @@ describe("board.setShip(shipParams, coordinates)", function () {
 });
 
 describe("getOccupied() returns array of occupied coordinates", () => {
-  const board = new Gameboard(input);
-  const coordinates = ["A,1", "A,2", "A,3"];
-  const ship = new Ship({ index: 1, size: 3 });
-  board.setShip(ship, coordinates);
+  it("iterate through gridMap and find cell that contains ship", () => {
+    const board = new Gameboard(input);
+    const coordinates = ["A,1", "A,2", "A,3"];
+    const ship = new Ship({ index: 1, size: 3 });
+    board.setShip(ship, coordinates);
 
-  expect(board.getOccupiedCells()).toEqual(expect.arrayContaining(coordinates));
+    expect(board.getOccupiedCells()).toEqual(
+      expect.arrayContaining(coordinates)
+    );
+    expect(board.occupied).toEqual(expect.arrayContaining(coordinates));
+  });
 });

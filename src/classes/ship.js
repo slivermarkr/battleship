@@ -20,7 +20,7 @@ export default class Ship {
     return this.cluster;
   };
 
-  resetShip = () => {
+  reset = () => {
     this.hitCount = 0;
     this.cluster = undefined;
     this.isSet = false;

@@ -1,4 +1,4 @@
-import { getCoorAdjacentList } from "../utils/functions";
+import { getCoorAdjacentList } from "../utils/fn.js";
 
 export default class GridCell {
   constructor(coor) {
