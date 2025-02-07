@@ -4,6 +4,8 @@ const output = {
   coor: "A,1",
   isOccupied: false,
   isBuffer: false,
+  isAttacked: false,
+  shipData: undefined,
   adjacentList: undefined,
 };
 
@@ -20,6 +22,8 @@ describe("GridCell test", () => {
     expect(cell.isOcccupied).toBe(output.isOccupied);
     expect(cell.coor).toBe(output.coor);
     expect(cell.adjacentList).toBe(output.adjacentList);
+    expect(cell.shipData).toBe(output.shipData);
+    expect(cell.isAttacked).toBe(output.isAttacked);
   });
 
   //if cell is occupied
@@ -52,5 +56,20 @@ describe("GridCell test", () => {
     expect(() => cell.getAdjacentList("Z,11")).toThrow(
       new Error(`"Z,11" is NOT VALID COORDINATE`)
     );
+  });
+});
+
+describe("Cell.reset()", () => {
+  const cell = new GridCell("A,1");
+  cell.isOcccupied = true;
+  cell.isAttacked = true;
+  cell.isBuffer = false;
+  cell.takeShip({ size: 3, index: 1 });
+  cell.reset();
+  it("reset cell properties to false, and ship to undefined", () => {
+    expect(cell.isOcccupied).toBe(false);
+    expect(cell.isAttacked).toBe(false);
+    expect(cell.isBuffer).toBe(false);
+    expect(cell.shipData).toBe(undefined);
   });
 });

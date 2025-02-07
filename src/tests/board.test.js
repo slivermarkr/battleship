@@ -1,12 +1,14 @@
 import { Gameboard } from "../classes/board";
+import Ship from "../classes/ship";
 import GridCell from "../classes/cell";
+import { isValidCoor } from "../utils/functions";
 
 const input = {
   name: "Player One",
   dimension: 10,
 };
 
-describe.skip("Gameboard Test", function () {
+describe("Gameboard Test", function () {
   test("input dimension", () => {
     expect(input.dimension).toEqual(10);
   });
@@ -32,7 +34,10 @@ describe.skip("Gameboard Test", function () {
       },
     };
     const board = new Gameboard(input);
-    expect(board).toEqual(gbOutput);
+    expect(board.dimension).toBe(10);
+    expect(board.occupied.length).toBe(0);
+    expect(board.gridMap).toBeInstanceOf(Map);
+    expect(board).toBeInstanceOf(Gameboard);
   });
 
   test("baord.receiveAttack(): if board.map.get(coor) was attacked check if it's miss or hit", () => {
@@ -93,4 +98,67 @@ describe("create GridMap use coordinate as key", () => {
   test("board.gridMap.size === 100", () => {
     expect(board.gridMap.size).toBe(100);
   });
+});
+
+describe("board.receiveAttack()", function () {
+  test("recieveAttack() should throw an ERROR on INVALID COOR", () => {
+    const board = new Gameboard(input);
+    const coorToAttack = "X,11";
+    expect(() => {
+      board.receiveAttack(coorToAttack);
+    }).toThrow("INVALID COOR");
+  });
+
+  test("receiveAttack(coor) cell equvalent should return cell.isAttacked true and board.hitMap should be be updated", () => {
+    const board = new Gameboard(input);
+    const coorToAttack = "A,1";
+    board.receiveAttack(coorToAttack);
+    expect(board.gridMap.get(coorToAttack).isAttacked).toBe(true);
+    expect(board.hitMap.miss.some((el) => el == coorToAttack)).toBe(true);
+  });
+});
+
+describe("board.setShip(shipParams, coordinates)", function () {
+  const coordinates = ["A,1", "A,2", "A,3"];
+  const ship = new Ship({ index: 1, size: 3 });
+  it("shipParams has to be instance of Ship class", () => {
+    expect(ship).toBeInstanceOf(Ship);
+  });
+  it("coordinates has to be valid", () => {
+    for (const coor of coordinates) {
+      expect(isValidCoor(coor)).toBe(true);
+    }
+  });
+
+  const board = new Gameboard(input);
+  board.setShip(ship, coordinates);
+  it("is setShip successfully board.occupied array should have the valud of coordinates", () => {
+    expect(board.occupied).toEqual(expect.arrayContaining(coordinates));
+  });
+  it("each grid cell should contains the same Ship instance", () => {
+    for (const coor of coordinates) {
+      expect(board.gridMap.get(coor).shipData).toEqual(ship);
+    }
+  });
+  it("ship Object isSet should be true after calling the setShip()", () => {
+    for (const coor of coordinates) {
+      expect(board.gridMap.get(coor).shipData.isSet).toBe(true);
+    }
+  });
+
+  it("ERROR is returned if shipObj.size !== coordinates.length", () => {
+    const ship = new Ship({ size: 1, index: 2 });
+    expect(() => {
+      board.setShip(ship, coordinates);
+    }).toThrow("shipObj.size !== coordinates.length");
+  });
+});
+
+describe("getOccupied() returns array of occupied coordinates", () => {
+  const board = new Gameboard(input);
+  const coordinates = ["A,1", "A,2", "A,3"];
+  const ship = new Ship({ index: 1, size: 3 });
+  board.setShip(ship, coordinates);
+
+  expect(board.getOccupiedCells()).toEqual(expect.arrayContaining(coordinates));
 });

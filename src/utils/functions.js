@@ -1,4 +1,5 @@
 const DIMENSION = 10;
+
 export function generateRandomNum() {
   return Math.floor(Math.random() * 10);
 }

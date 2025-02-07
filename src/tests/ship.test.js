@@ -1,4 +1,4 @@
-import { Ship } from "../classes/ship";
+import Ship from "../classes/ship";
 
 // Ship input
 const input = {
@@ -67,6 +67,7 @@ describe("SHIP TEST", () => {
     ship.isHit();
     ship.resetShip();
     expect(ship.hitCount).toBe(0);
+    expect(ship.isSet).toBe(false);
     expect(ship.cluster).toBe(undefined);
   });
 });

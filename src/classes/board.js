@@ -1,5 +1,6 @@
-import { generateGridArray } from "../utils/functions";
+import { generateGridArray, isValidCoor } from "../utils/functions";
 import GridCell from "./cell";
+
 export class Gameboard {
   constructor({ name, dimension }) {
     this.name = name;
@@ -10,6 +11,7 @@ export class Gameboard {
       hit: [],
       miss: [],
     };
+
     this.initGridMap();
   }
 
@@ -20,6 +22,33 @@ export class Gameboard {
   }
 
   receiveAttack(coor) {
-    const cell = board.gridMap.get(coor);
+    if (!isValidCoor(coor)) throw new Error("INVALID COOR");
+    const cell = this.gridMap.get(coor);
+    cell.isAttacked = true;
+
+    if (cell.shipData) {
+      const ship = cell.shipData;
+      ship.isHit();
+      this.hitMap.hit.push(coor);
+    } else {
+      this.hitMap.miss.push(coor);
+    }
+  }
+
+  setShip(shipObj, coordinates) {
+    if (shipObj.size !== coordinates.length)
+      throw new Error("shipObj.size !== coordinates.length");
+    shipObj["cluster"] = coordinates;
+
+    for (let coor of coordinates) {
+      const cell = this.gridMap.get(coor);
+      cell.takeShip(shipObj);
+
+      this.occupied.push(coor);
+    }
+  }
+
+  getOccupiedCells() {
+    return this.occupied;
   }
 }

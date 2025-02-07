@@ -6,7 +6,7 @@ import {
   getCoorAdjacentList,
 } from "../utils/functions";
 
-describe.skip("generateRandomNumber", function () {
+describe("generateRandomNumber", function () {
   test("generateRandomNumber should not be > 10", () => {
     expect(generateRandomNum()).not.toBeGreaterThan(10);
   });
@@ -15,7 +15,7 @@ describe.skip("generateRandomNumber", function () {
   });
 });
 
-describe.skip("generateGridArray", () => {
+describe("generateGridArray", () => {
   const grid = generateGridArray();
 
   test("grid elements should pass isValidCoor method test", () => {
@@ -25,7 +25,7 @@ describe.skip("generateGridArray", () => {
   });
 });
 
-describe.skip("validCoor function", () => {
+describe("validCoor function", () => {
   test("coor needs to be a valid coordinate", () => {
     const coordinates = ["A,1", "A,2", "A,3"];
     for (let coor of coordinates) {

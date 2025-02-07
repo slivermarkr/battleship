@@ -1,10 +1,11 @@
-export class Ship {
-  constructor({ size, index, orientation, cluster } = {}) {
+export default class Ship {
+  constructor({ size, index, orientation = "h", cluster = [] } = {}) {
     this.size = size;
     this.orientation = orientation;
     this.index = index;
     this.hitCount = 0;
     this.cluster = cluster;
+    this.isSet = false;
   }
 
   isHit = () => {
@@ -22,5 +23,6 @@ export class Ship {
   resetShip = () => {
     this.hitCount = 0;
     this.cluster = undefined;
+    this.isSet = false;
   };
 }
