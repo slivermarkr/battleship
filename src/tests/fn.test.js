@@ -4,6 +4,7 @@ import {
   generateGridArray,
   convertCoorToInt,
   getCoorAdjacentList,
+  getRandomOrientation,
 } from "../utils/fn";
 
 describe("generateRandomNumber", function () {
@@ -60,4 +61,11 @@ describe("getAdjList()", () => {
   test("takes a coor and return it's valid adjacent neighbors ", () => {
     expect(getCoorAdjacentList("A,1")).toEqual(["A,2", "B,1", "B,2"]);
   });
+});
+
+it("getRandomOrientation should return only 'h' or 'v'", () => {
+  for (let i = 0; i < 100; ++i) {
+    let result = getRandomOrientation();
+    expect(["h", "v"]).toContain(result);
+  }
 });

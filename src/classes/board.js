@@ -1,5 +1,13 @@
 import { generateGridArray, isValidCoor } from "../utils/fn.js";
 import GridCell from "./cell.js";
+import Ship from "./ship.js";
+
+const shipArrayInput = [
+  { type: 1, instances: 4 },
+  { type: 2, instances: 3 },
+  { type: 3, instances: 2 },
+  { type: 4, instances: 1 },
+];
 
 export class Gameboard {
   constructor({ name, dimension }) {
@@ -11,6 +19,7 @@ export class Gameboard {
       hit: [],
       miss: [],
     };
+    this.shipList = this.createArrayOfShipInstances(shipArrayInput);
 
     this.initGridMap();
   }
@@ -51,8 +60,58 @@ export class Gameboard {
   getOccupiedCells() {
     const res = [];
     for (const cell of this.gridMap.values()) {
-      res.push(cell.coor);
+      if (cell.shipData) {
+        res.push(cell.coor);
+      }
     }
     return res;
   }
+
+  reset() {
+    this.occupied.length = 0;
+    this.hitMap.miss.length = 0;
+    this.hitMap.hit.length = 0;
+
+    for (const cell of this.gridMap.values()) {
+      cell.reset();
+    }
+  }
+
+  createArrayOfShipInstances(arrayInput) {
+    const array = [];
+    for (let i = 0; i < arrayInput.length; ++i) {
+      const shipData = arrayInput[i];
+      let j = 0;
+      while (j < shipData.instances) {
+        array.push(new Ship({ size: shipData.type, index: j }));
+        ++j;
+      }
+    }
+    return array;
+  }
+
+  getRemainingShipCount() {
+    return this.shipList.filter((ship) => !ship.isSunk()).length;
+  }
+
+  isFleetDefeated() {
+    return this.getRemainingShipCount() === 0;
+  }
 }
+
+// const board = new Gameboard({ name: "You", dimension: 10 });
+// board.setShip(board.shipList[0], ["A,1"]);
+// board.receiveAttack("A,1");
+// console.log(board.occupied);
+// console.log(board.shipList[0]);
+// console.log(board.getRemainingShipCount());
+// for (let i = 0; i < board.shipList.length; ++i) {
+//   board.shipList[i].isHit();
+//   board.shipList[i].isHit();
+//   board.shipList[i].isHit();
+//   board.shipList[i].isHit();
+//   console.log(board.shipList[i]);
+// }
+
+// console.log(board.getRemainingShipCount());
+// console.log(board.isFleetDefeated());

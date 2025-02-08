@@ -59,6 +59,6 @@ export function getCoorAdjacentList(coor) {
     });
 }
 
-// const coor = "J,10";
-// const res = getCoorAdjacentList(coor);
-// console.log(res);
+export function getRandomOrientation() {
+  return Math.random() > 0.5 ? "h" : "v";
+}

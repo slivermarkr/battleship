@@ -167,9 +167,119 @@ describe("getOccupied() returns array of occupied coordinates", () => {
     const ship = new Ship({ index: 1, size: 3 });
     board.setShip(ship, coordinates);
 
+    expect(board.getOccupiedCells()).toEqual(coordinates);
     expect(board.getOccupiedCells()).toEqual(
       expect.arrayContaining(coordinates)
     );
     expect(board.occupied).toEqual(expect.arrayContaining(coordinates));
+  });
+});
+
+describe("board.reset()", () => {
+  it("iterate through gridMap do cell.reset()", () => {
+    const board = new Gameboard(input);
+    const ship = new Ship({ index: 1, size: 3 });
+    const coordinates = ["A,1", "A,2", "A,3"];
+    board.setShip(ship, coordinates);
+
+    board.reset();
+
+    for (const cell of board.gridMap.values()) {
+      expect(cell.isOcccupied).toBe(false);
+      expect(cell.isAttacked).toBe(false);
+      expect(cell.isBuffer).toBe(false);
+      expect(cell.shipData).toBe(undefined);
+    }
+  });
+
+  const board = new Gameboard(input);
+  const ship = new Ship({ index: 1, size: 3 });
+  const coordinates = ["A,1", "A,2", "A,3"];
+  board.setShip(ship, coordinates);
+  it("board.occupied = []", () => {
+    board.reset();
+
+    expect(board.occupied).toEqual([]);
+  });
+
+  it("board.hitMap.hit = []", () => {
+    board.receiveAttack("A,1");
+    board.reset();
+    expect(board.hitMap.hit).toEqual([]);
+  });
+
+  it("board.hitMap.miss = []", () => {
+    board.receiveAttack("J,1");
+    board.reset();
+    expect(board.hitMap.miss).toEqual([]);
+  });
+});
+
+describe("Gameboard.createArrayOfShipInstances()", function () {
+  const shipArrayInput = [
+    { type: 1, instances: 4 },
+    { type: 2, instances: 3 },
+    { type: 3, instances: 2 },
+    { type: 4, instances: 1 },
+  ];
+  const board = new Gameboard(input);
+  it("given an array of object that contains  type of ship and it's # of instances return an array of Ship instances", () => {
+    expect(board.createArrayOfShipInstances(shipArrayInput)).toBeInstanceOf(
+      Array
+    );
+  });
+  const array = board.createArrayOfShipInstances(shipArrayInput);
+
+  it("board.createArrayOfShipInstances() should be the sum of the shipArrayInput.instances", () => {
+    let sumOfInstances = 0;
+    for (let i = 0; i < shipArrayInput.length; ++i) {
+      sumOfInstances += shipArrayInput[i].instances;
+    }
+    expect(array.length).toBe(sumOfInstances);
+  });
+
+  it("createArrayOfShipInstances() elements should all be an instance of 'class' Ship", () => {
+    for (let i = 0; i < array.length; ++i) {
+      expect(array[i]).toBeInstanceOf(Ship);
+      expect(board.shipList[i]).toBeInstanceOf(Ship);
+    }
+  });
+});
+
+describe("getRemainingShipCount()", function () {
+  const board = new Gameboard(input);
+
+  it("getRemainingShipCount() returns number of ships still alive", () => {
+    expect(board.getRemainingShipCount()).toBe(10);
+  });
+
+  it("getRemainingShipCount() will not change if until ship is sunk", () => {
+    // hit the ship that has four lives once
+    board.shipList[9].isHit();
+    expect(board.getRemainingShipCount()).toBe(10);
+  });
+
+  it("getRemainingShipCount() returns number of ships still alive", () => {
+    board.shipList[0].isHit();
+    expect(board.getRemainingShipCount()).toBe(9);
+    expect(board.shipList[9].hitCount).toBe(1);
+  });
+});
+
+describe("isFleetDefeated()", function () {
+  const board = new Gameboard(input);
+
+  it("returns true if board.getRemainingShipCount return 0", () => {
+    expect(board.isFleetDefeated()).toBe(false);
+  });
+
+  it("returns true if board.getRemainingShipCount return 0", () => {
+    for (let i = 0; i < board.shipList.length; ++i) {
+      board.shipList[i].isHit();
+      board.shipList[i].isHit();
+      board.shipList[i].isHit();
+      board.shipList[i].isHit();
+    }
+    expect(board.isFleetDefeated()).toBe(true);
   });
 });

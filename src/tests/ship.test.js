@@ -28,7 +28,7 @@ describe("SHIP TEST", () => {
     expect(ship.isSunk()).toBe(false);
   });
 
-  test("ship.isSunk() should return false if ship.size > ship.hitCount ", () => {
+  test("ship.isSunk() should return true if ship.size <= ship.hitCount ", () => {
     const ship = new Ship(input);
     ship.isHit();
     ship.isHit();

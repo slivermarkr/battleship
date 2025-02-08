@@ -24,5 +24,6 @@ export default class Ship {
     this.hitCount = 0;
     this.cluster = undefined;
     this.isSet = false;
+    this.orientation = "h";
   };
 }
