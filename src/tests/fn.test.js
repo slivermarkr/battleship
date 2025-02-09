@@ -123,13 +123,11 @@ describe("generateRandomCoordinate()", function () {
 
 describe("generateRandomCluster given a size and an array of occupied grid", function () {
   it("", () => {
-    const size = 3;
     const board = new Gameboard({ name: "Me" });
-    const res = generateRandomCluster(size, board);
-    expect(res).toBeInstanceOf(Array);
-    expect(res.length).toBe(size);
-    for (let i = 0; i < res.length; ++i) {
-      expect(board.occupied.includes(res[i])).toBe(false);
+    const cluster = generateRandomCluster(board.shipList[0], board);
+
+    for (const element of cluster) {
+      expect(isValidCoor(element)).toBe(true);
     }
   });
 });

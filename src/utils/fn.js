@@ -87,18 +87,51 @@ export function generateRandomCoordinates() {
   }`;
 }
 
-export function generateRandomCluster(
-  { orientation, size },
-  { occupied, gridMap }
-) {
-  let generatedCoor = [];
-  while (generatedCoor.length < size) {
-    const coor = generateRandomCoordinates();
-    const cellEq = gridMap.get(coor) || {};
+export function isCellClearForOccupation(coor, { occupied, gridMap }) {
+  const cell = gridMap.get(coor) || {};
+  return !occupied.includes(coor) && !cell.isBuffer; // returns true if cell.isBuffer = false && !occupied.includes(coor)
+}
 
-    if (!occupied.includes(coor) && !cellEq.isBuffer) {
-      generatedCoor.push(coor);
+export function generateRandomCluster({ size }, { occupied, gridMap }) {
+  let cluster;
+  let isValid = false;
+  let orientation = undefined;
+
+  while (!isValid) {
+    cluster = [];
+    orientation = getRandomOrientation();
+    const coor = generateRandomCoordinates();
+
+    if (!isCellClearForOccupation(coor, { occupied, gridMap })) continue;
+
+    cluster.push(coor);
+    console.log("coor", coor);
+
+    const coorAsInteger = convertCoorToInt(coor); //returns [1,1] ex. "A,1"
+    for (let i = 1; i < size; ++i) {
+      let nextCoor;
+      if (orientation == "h") {
+        nextCoor = `${String.fromCharCode(coorAsInteger[0] + 64)},${
+          coorAsInteger[1] + i
+        }`;
+      } else if (orientation == "v") {
+        nextCoor = `${String.fromCharCode(coorAsInteger[0] + i + 64)},${
+          coorAsInteger[1]
+        }`;
+      }
+      if (
+        !isValidCoor(nextCoor) ||
+        !isCellClearForOccupation(nextCoor, { occupied, gridMap })
+      ) {
+        cluster = [];
+        break;
+      }
+      console.log("next", nextCoor);
+      cluster.push(nextCoor);
     }
+
+    if (cluster.length == size) isValid = true;
   }
-  return generatedCoor;
+
+  return { cluster, orientation };
 }

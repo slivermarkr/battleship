@@ -1,5 +1,5 @@
 import { Gameboard } from "./board.js";
-import { generateRandomCluster } from "../utils/fn.js";
+import { generateRandomCluster, getRandomOrientation } from "../utils/fn.js";
 
 export class Player {
   constructor({ name, dimension = 10 }) {
@@ -18,17 +18,20 @@ export class Computer extends Player {
     for (let i = 0; i < this.board.shipList.length; ++i) {
       const ship = this.board.shipList[i];
       const res = generateRandomCluster(ship, this.board);
-      console.log("res", res);
-      this.board.setShip(ship, res);
-      console.log("occupied", this.board.occupied.length);
+      // console.log(res);
+      this.board.setShip(ship, res.cluster);
+      ship.orientation = res.orientation;
+      // this.occupied = this.board.occupied.concat(res);
     }
-    // const res = generateRandomCluster(4, this.board);
-    // console.log(res);
+    console.log(this.board.occupied);
+    console.log(this.board.shipList);
   }
 }
 
 const com = new Computer({});
 com.setShipRandomly();
+
+// generateRandomCluster(com.board.shipList[9], com.board);
 // const board = com.board;
 // board.setShip(board.shipList[0], ["A,1"]);
 // console.log(board.getOccupiedCells());
