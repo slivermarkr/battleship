@@ -6,8 +6,11 @@ import {
   getCoorAdjacentList,
   getRandomOrientation,
   isBufferCluster,
+  generateRandomCoordinates,
+  generateRandomCluster,
 } from "../utils/fn";
 
+import { Gameboard } from "../classes/board.js";
 describe("generateRandomNumber", function () {
   test("generateRandomNumber should not be > 10", () => {
     for (let i = 0; i < 100; ++i) {
@@ -106,5 +109,27 @@ describe("isBufferCluster()", function () {
     const expected = ["B,2", "B,1", "A,2"];
     expect(result).toEqual(expect.arrayContaining(expected));
     expect(result.length).toBe(expected.length);
+  });
+});
+
+describe("generateRandomCoordinate()", function () {
+  it("should produce a validCoordinates only", () => {
+    for (let i = 0; i < 300; ++i) {
+      const res = generateRandomCoordinates();
+      expect(isValidCoor(res)).toBe(true);
+    }
+  });
+});
+
+describe("generateRandomCluster given a size and an array of occupied grid", function () {
+  it("", () => {
+    const size = 3;
+    const board = new Gameboard({ name: "Me" });
+    const res = generateRandomCluster(size, board);
+    expect(res).toBeInstanceOf(Array);
+    expect(res.length).toBe(size);
+    for (let i = 0; i < res.length; ++i) {
+      expect(board.occupied.includes(res[i])).toBe(false);
+    }
   });
 });

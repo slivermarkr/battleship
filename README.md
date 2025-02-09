@@ -16,4 +16,10 @@ TODO: when a ship is hit reveal some of the buffer
 
 TODO: add some UI
 
+- create gridUI
+- create shipObjects
+- dialog when choosing opponent
+
 TODO: create a function that take {index, size} as params and returns corresponding ship instances from Gameboard.shipList
+
+TODO: fix on fn.js: generateRandomCluster() is able to generate random coordinate cluster but I forget about the random orientation implementation

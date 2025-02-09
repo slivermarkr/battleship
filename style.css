@@ -1,0 +1,152 @@
+*,
+body {
+  box-sizing: border-box;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+:root {
+  --size: 2rem;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  padding: 0;
+}
+
+td,
+tr {
+  padding: 0;
+}
+
+table {
+  display: flex;
+  flex-direction: column;
+  /* gap: 2rem; */
+  justify-content: center;
+  align-items: center;
+}
+
+.grid {
+  padding: 0;
+  margin: 0;
+  outline: solid 1px black;
+  width: var(--size);
+  height: var(--size);
+  position: relative;
+  background-color: rgb(223, 223, 223);
+}
+
+.cell {
+  position: relative;
+}
+
+.label-row::before,
+.label-col::before {
+  position: absolute;
+  content: attr(data-label);
+  font-size: 14px;
+  opacity: 0.6;
+}
+
+.cell[data-label="1"]::after {
+  content: "A";
+  position: absolute;
+  left: -1rem;
+  bottom: 0.5rem;
+  font-size: 14px;
+  opacity: 0.6;
+}
+
+.label-col::before {
+  top: -1.3rem;
+  left: 0.6rem;
+}
+
+.label-row::before {
+  left: -1rem;
+  top: 0.5rem;
+}
+
+#arena {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: start;
+}
+
+.leftSide,
+.rightSide {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.linkGrp {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 13px;
+}
+/* .rightSide {
+  display: none;
+} */
+
+.blur {
+  opacity: 0.3;
+}
+
+.ship {
+  margin: 0.5rem;
+  border: 2px solid blue;
+  position: relative;
+  cursor: grabbing;
+  background-color: white;
+}
+
+.ship[data-type="1"] {
+  width: var(--size);
+  height: var(--size);
+}
+
+.ship[data-type="2"] {
+  width: calc(var(--size) * 2);
+  height: var(--size);
+}
+
+.ship[data-type="2"][data-orientation="v"] {
+  width: var(--size);
+  height: calc(var(--size) * 2);
+}
+
+.ship[data-type="3"] {
+  width: calc(var(--size) * 3);
+  height: var(--size);
+}
+
+.ship[data-type="3"][data-orientation="v"] {
+  height: calc(var(--size) * 3);
+  width: var(--size);
+}
+
+.ship[data-type="4"] {
+  width: calc(var(--size) * 4);
+  height: var(--size);
+}
+
+.ship[data-type="4"][data-orientation="v"] {
+  height: calc(var(--size) * 4);
+  width: var(--size);
+}
+
+.fleetSetupDiv {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 2px solid black;
+  min-width: 18rem;
+  min-height: 18rem;
+  margin-top: 2rem;
+}
+
+.hidden {
+  display: none;
+}

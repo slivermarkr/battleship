@@ -81,13 +81,24 @@ export function isBufferCluster(coordinates) {
   return result.sort((a, b) => (a.charCodeAt(0) > b.charCodeAt(0) ? -1 : 0));
 }
 
-// const res = isBufferCluster(["A,1", "A,2", "A,3"]);
-// const res = isBufferCluster(["D,5"]);
-// const res = isBufferCluster(["A,1"]);
-// console.log(res);
+export function generateRandomCoordinates() {
+  return `${String.fromCharCode(generateRandomNum() + 65)},${
+    generateRandomNum() + 1
+  }`;
+}
 
-// console.log(
-//   ["B,2", "B,1", "A,2"].sort((a, b) =>
-//     a.charCodeAt(0) > b.charCodeAt(0) ? -1 : 0
-//   )
-// );
+export function generateRandomCluster(
+  { orientation, size },
+  { occupied, gridMap }
+) {
+  let generatedCoor = [];
+  while (generatedCoor.length < size) {
+    const coor = generateRandomCoordinates();
+    const cellEq = gridMap.get(coor) || {};
+
+    if (!occupied.includes(coor) && !cellEq.isBuffer) {
+      generatedCoor.push(coor);
+    }
+  }
+  return generatedCoor;
+}
