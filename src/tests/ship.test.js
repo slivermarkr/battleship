@@ -23,12 +23,12 @@ describe("SHIP TEST", () => {
     expect(ship.size).toBe(3);
   });
 
-  test("ship.isSunk() should return false if ship.size > ship.hitCount ", () => {
+  test("ship.isSunk() should return false if ship.hitCount < ship.size", () => {
     const ship = new Ship(input);
     expect(ship.isSunk()).toBe(false);
   });
 
-  test("ship.isSunk() should return true if ship.size <= ship.hitCount ", () => {
+  test("ship.isSunk() should return true if  ship.hitCount >= ship.size", () => {
     const ship = new Ship(input);
     ship.isHit();
     ship.isHit();
@@ -36,7 +36,7 @@ describe("SHIP TEST", () => {
     expect(ship.isSunk()).toBe(true);
   });
 
-  test("getCoorCluster returns coordinates that contains ship", () => {
+  test("getCoorCluster returns coordinates that contains that specific ship", () => {
     const ship = new Ship(input);
     expect(ship.getCoorCluster()).toEqual(["A,1", "A,2", "A,3"]);
   });
@@ -65,7 +65,9 @@ describe("SHIP TEST", () => {
     ship.isHit();
     ship.isHit();
     ship.isHit();
+
     ship.reset();
+
     expect(ship.hitCount).toBe(0);
     expect(ship.isSet).toBe(false);
     expect(ship.cluster).toBe(undefined);

@@ -1,4 +1,8 @@
-import { generateGridArray, isValidCoor } from "../utils/fn.js";
+import {
+  generateGridArray,
+  isValidCoor,
+  isBufferCluster,
+} from "../utils/fn.js";
 import GridCell from "./cell.js";
 import Ship from "./ship.js";
 
@@ -47,13 +51,31 @@ export class Gameboard {
   setShip(shipObj, coordinates) {
     if (shipObj.size !== coordinates.length)
       throw new Error("shipObj.size !== coordinates.length");
+
     shipObj["cluster"] = coordinates;
+
+    // check if the coordinates being pass in is not in the board.occupied array
+    // also return error if cell.isBuffer = true
+    for (let coor of coordinates) {
+      if (this.occupied.some((cell) => cell == coor)) {
+        throw new Error("coordinate is already occupied");
+      } else if (this.gridMap.get(coor).isBuffer) {
+        throw new Error("coordinate is already buffer");
+      }
+    }
 
     for (let coor of coordinates) {
       const cell = this.gridMap.get(coor);
       cell.takeShip(shipObj);
 
       this.occupied = this.getOccupiedCells();
+    }
+
+    // get the adjlist of each coordianates excluding the coor itself and set isBuffer to true
+    const bufferCluster = isBufferCluster(coordinates);
+    for (const c of bufferCluster) {
+      const cell = this.gridMap.get(c);
+      cell.isBuffer = true;
     }
   }
 

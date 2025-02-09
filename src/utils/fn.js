@@ -62,3 +62,32 @@ export function getCoorAdjacentList(coor) {
 export function getRandomOrientation() {
   return Math.random() > 0.5 ? "h" : "v";
 }
+
+export function isBufferCluster(coordinates) {
+  let result = [];
+  for (let i = 0; i < coordinates.length; ++i) {
+    const adjList = getCoorAdjacentList(coordinates[i]);
+    // console.log(`adjList of ${coordinates[i]}`, adjList);
+    result = result.concat(adjList);
+  }
+
+  result = result.reduce((a, b) => {
+    if (a.some((aEl) => aEl == b) || coordinates.some((coor) => coor == b))
+      return a;
+    a.push(b);
+    return a;
+  }, []);
+
+  return result.sort((a, b) => (a.charCodeAt(0) > b.charCodeAt(0) ? -1 : 0));
+}
+
+// const res = isBufferCluster(["A,1", "A,2", "A,3"]);
+// const res = isBufferCluster(["D,5"]);
+// const res = isBufferCluster(["A,1"]);
+// console.log(res);
+
+// console.log(
+//   ["B,2", "B,1", "A,2"].sort((a, b) =>
+//     a.charCodeAt(0) > b.charCodeAt(0) ? -1 : 0
+//   )
+// );

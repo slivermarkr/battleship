@@ -1,7 +1,7 @@
 import { Gameboard } from "../classes/board";
 import Ship from "../classes/ship";
 import GridCell from "../classes/cell";
-import { isValidCoor } from "../utils/fn";
+import { isValidCoor, isBufferCluster } from "../utils/fn";
 
 const input = {
   name: "Player One",
@@ -23,16 +23,6 @@ describe("Gameboard Test", function () {
   });
 
   test("gameboard as instance constructor", () => {
-    const gbOutput = {
-      name: "Player One",
-      dimension: 10,
-      gridMap: new Map(),
-      occupied: [],
-      hitMap: {
-        hit: [],
-        miss: [],
-      },
-    };
     const board = new Gameboard(input);
     expect(board.dimension).toBe(10);
     expect(board.occupied.length).toBe(0);
@@ -157,6 +147,26 @@ describe("board.setShip(shipParams, coordinates)", function () {
     expect(() => {
       board.setShip(ship, coordinates);
     }).toThrow("shipObj.size !== coordinates.length");
+  });
+
+  it("return an Error if user tries to setShip in an occupied cell: 'coordinate you're trying to place ship is already occupied'", () => {
+    expect(() => board.setShip(ship, coordinates)).toThrow(
+      "coordinate is already occupied"
+    );
+  });
+
+  it("coordinates adjList element must be set to isBuffer = true", () => {
+    const bufferArray = isBufferCluster(coordinates);
+    for (let i = 0; i < bufferArray.length; ++i) {
+      expect(board.gridMap.get(bufferArray[i]).isBuffer).toBe(true);
+    }
+  });
+
+  it("return error if cell is a buffer", () => {
+    const ship = new Ship({ size: 1, index: 2 });
+    expect(() => board.setShip(ship, ["B,2"])).toThrow(
+      "coordinate is already buffer"
+    );
   });
 });
 
