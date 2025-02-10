@@ -32,6 +32,29 @@ export function convertCoorToInt(coor) {
   return res;
 }
 
+export function getCoorAdjacentCorner(coor) {
+  if (!isValidCoor(coor)) throw new Error(`"${coor}" is NOT VALID COORDINATE`);
+  const [row, col] = convertCoorToInt(coor);
+  const buffer = [
+    [-1, -1],
+    [-1, 1],
+    [1, -1],
+    [1, 1],
+  ];
+  return buffer
+    .map(([x, y]) => [row + x, col + y])
+    .filter(
+      ([nRow, nCol]) =>
+        nRow >= 1 && nRow <= DIMENSION && nCol <= DIMENSION && nCol >= 1
+    )
+    .map(([rChar, cNum]) => {
+      const coor = `${String.fromCharCode(rChar + 64)},${cNum}`;
+      return isValidCoor(coor) ? coor : "ERROR: NOT VALID COOR";
+    });
+}
+
+console.log(getCoorAdjacentCorner("A,1"));
+
 export function getCoorAdjacentList(coor) {
   if (!isValidCoor(coor)) throw new Error(`"${coor}" is NOT VALID COORDINATE`);
   const [row, col] = convertCoorToInt(coor);
@@ -105,7 +128,6 @@ export function generateRandomCluster({ size }, { occupied, gridMap }) {
     if (!isCellClearForOccupation(coor, { occupied, gridMap })) continue;
 
     cluster.push(coor);
-    console.log("coor", coor);
 
     const coorAsInteger = convertCoorToInt(coor); //returns [1,1] ex. "A,1"
     for (let i = 1; i < size; ++i) {
@@ -126,7 +148,6 @@ export function generateRandomCluster({ size }, { occupied, gridMap }) {
         cluster = [];
         break;
       }
-      console.log("next", nextCoor);
       cluster.push(nextCoor);
     }
 

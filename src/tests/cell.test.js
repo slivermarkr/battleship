@@ -1,4 +1,5 @@
 import GridCell from "../classes/cell";
+import { Gameboard } from "../classes/board";
 
 const output = {
   coor: "A,1",
@@ -19,7 +20,7 @@ describe("GridCell test", () => {
     const coor = "A,1";
     const cell = new GridCell(coor);
     expect(cell.isBuffer).toBe(output.isBuffer);
-    expect(cell.isOcccupied).toBe(output.isOccupied);
+    expect(cell.isOccupied).toBe(output.isOccupied);
     expect(cell.coor).toBe(output.coor);
     expect(cell.adjacentList).toBe(output.adjacentList);
     expect(cell.shipData).toBe(output.shipData);
@@ -61,15 +62,36 @@ describe("GridCell test", () => {
 
 describe("Cell.reset()", () => {
   const cell = new GridCell("A,1");
-  cell.isOcccupied = true;
+  cell.isOccupied = true;
   cell.isAttacked = true;
   cell.isBuffer = false;
   cell.takeShip({ size: 3, index: 1 });
   cell.reset();
   it("reset cell properties to false, and ship to undefined", () => {
-    expect(cell.isOcccupied).toBe(false);
+    expect(cell.isOccupied).toBe(false);
     expect(cell.isAttacked).toBe(false);
     expect(cell.isBuffer).toBe(false);
     expect(cell.shipData).toBe(undefined);
   });
 });
+
+describe("cell.getAdjacentCorner", function () {
+  const cell = new GridCell("A,1");
+  const arrayOfCellAdjacentCorner = cell.getAdjacentCorner();
+  expect(arrayOfCellAdjacentCorner).toEqual(expect.arrayContaining(["B,2"]));
+});
+
+// describe("is cell is attacked set isRevealed = true", function () {
+//   const board = new Gameboard({ name: "Ou" });
+//   const coor = "A,1";
+//   board.receiveAttack(coor);
+
+//   const cell = board.gridMap.get(coor);
+//   const adjacentCorner = cell.getAdjacentCorner();
+//   // const cell = new GridCell("A,1");
+//   // cell.isAttacked = true;
+//   // const arrayOfCellAdjacentCorner = cell.getAdjacentCorner();
+//   // for (let i = 0; i < arrayOfCellAdjacentCorner.length; ++i) {
+//   //   expect(arrayOfCellAdjacentCorner[i].isRevealed).toBe(true);
+//   // }
+// });

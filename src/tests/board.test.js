@@ -195,7 +195,7 @@ describe("board.reset()", () => {
     board.reset();
 
     for (const cell of board.gridMap.values()) {
-      expect(cell.isOcccupied).toBe(false);
+      expect(cell.isOccupied).toBe(false);
       expect(cell.isAttacked).toBe(false);
       expect(cell.isBuffer).toBe(false);
       expect(cell.shipData).toBe(undefined);
@@ -291,5 +291,21 @@ describe("isFleetDefeated()", function () {
       board.shipList[i].isHit();
     }
     expect(board.isFleetDefeated()).toBe(true);
+  });
+});
+
+describe("get shipObject from the board.shiplist", function () {
+  const board = new Gameboard(input);
+  const shipIdxOneTypeOne = board.shipList[0];
+  const shipIdxOneTypeFour = board.shipList[9];
+  it("given a size and index, returns the corresponding ship", () => {
+    expect(board.getCorrespondingShip({ size: 1, index: 0 })).toEqual(
+      shipIdxOneTypeOne
+    );
+  });
+  it("given a size and index, returns the corresponding ship", () => {
+    expect(board.getCorrespondingShip({ size: 4, index: 0 })).toEqual(
+      shipIdxOneTypeFour
+    );
   });
 });

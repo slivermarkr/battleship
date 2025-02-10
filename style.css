@@ -95,45 +95,49 @@ table {
   opacity: 0.3;
 }
 
+.notBlur {
+  opacity: 1;
+}
+
 .ship {
-  margin: 0.5rem;
   border: 2px solid blue;
   position: relative;
   cursor: grabbing;
   background-color: white;
+  z-index: 2;
 }
 
-.ship[data-type="1"] {
+.ship[data-size="1"] {
   width: var(--size);
   height: var(--size);
 }
 
-.ship[data-type="2"] {
+.ship[data-size="2"] {
   width: calc(var(--size) * 2);
   height: var(--size);
 }
 
-.ship[data-type="2"][data-orientation="v"] {
+.ship[data-size="2"][data-orientation="v"] {
   width: var(--size);
   height: calc(var(--size) * 2);
 }
 
-.ship[data-type="3"] {
+.ship[data-size="3"] {
   width: calc(var(--size) * 3);
   height: var(--size);
 }
 
-.ship[data-type="3"][data-orientation="v"] {
+.ship[data-size="3"][data-orientation="v"] {
   height: calc(var(--size) * 3);
   width: var(--size);
 }
 
-.ship[data-type="4"] {
+.ship[data-size="4"] {
   width: calc(var(--size) * 4);
   height: var(--size);
 }
 
-.ship[data-type="4"][data-orientation="v"] {
+.ship[data-size="4"][data-orientation="v"] {
   height: calc(var(--size) * 4);
   width: var(--size);
 }
@@ -149,4 +153,23 @@ table {
 
 .hidden {
   display: none;
+}
+
+.occupied {
+  border: 2px solid blue;
+}
+
+.hit {
+  border: 2px solid red;
+}
+
+.miss {
+  border: 2px solid rgb(255, 251, 4);
+}
+
+.revealed {
+  background-color: rgb(202, 180, 152);
+}
+
+.buffer {
 }

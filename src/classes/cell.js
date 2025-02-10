@@ -1,12 +1,13 @@
-import { getCoorAdjacentList } from "../utils/fn.js";
+import { getCoorAdjacentCorner, getCoorAdjacentList } from "../utils/fn.js";
 
 export default class GridCell {
   constructor(coor) {
     this.coor = coor;
-    this.isOcccupied = false;
+    this.isOccupied = false;
     this.isBuffer = false;
     this.isAttacked = false;
     this.shipData = undefined;
+    this.adjacentList = undefined;
     this.adjacentList = undefined;
   }
 
@@ -26,8 +27,12 @@ export default class GridCell {
     return getCoorAdjacentList(this.coor);
   }
 
+  getAdjacentCorner() {
+    return getCoorAdjacentCorner(this.coor);
+  }
+
   reset() {
-    this.isOcccupied = false;
+    this.isOccupied = false;
     this.isBuffer = false;
     this.isAttacked = false;
     this.shipData = undefined;

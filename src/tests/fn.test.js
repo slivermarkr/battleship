@@ -1,4 +1,5 @@
 import {
+  getCoorAdjacentCorner,
   generateRandomNum,
   isValidCoor,
   generateGridArray,
@@ -124,10 +125,26 @@ describe("generateRandomCoordinate()", function () {
 describe("generateRandomCluster given a size and an array of occupied grid", function () {
   it("", () => {
     const board = new Gameboard({ name: "Me" });
-    const cluster = generateRandomCluster(board.shipList[0], board);
+    const cluster = generateRandomCluster(board.shipList[0], board); // return {cluster: [], orientation: "h"}
 
-    for (const element of cluster) {
+    for (const element of cluster.cluster) {
       expect(isValidCoor(element)).toBe(true);
     }
+  });
+});
+
+describe("getCoorAdjacentCorner", function () {
+  it("is a cell isHit and it was occupied reveal it's  adjacentCorner", () => {
+    const coor = "A,1";
+    expect(getCoorAdjacentCorner(coor)).toEqual(
+      expect.arrayContaining(["B,2"])
+    );
+  });
+
+  it("is a cell isHit and it was occupied reveal it's  adjacentCorner", () => {
+    const coor = "D,5";
+    expect(getCoorAdjacentCorner(coor)).toEqual(
+      expect.arrayContaining(["C,4", "C,6", "E,4", "E,6"])
+    );
   });
 });

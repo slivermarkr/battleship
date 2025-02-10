@@ -97,6 +97,10 @@ export class Gameboard {
     for (const cell of this.gridMap.values()) {
       cell.reset();
     }
+
+    for (const ship of this.shipList) {
+      ship.reset();
+    }
   }
 
   createArrayOfShipInstances(arrayInput) {
@@ -118,6 +122,14 @@ export class Gameboard {
 
   isFleetDefeated() {
     return this.getRemainingShipCount() === 0;
+  }
+
+  getCorrespondingShip({ size, index }) {
+    const shipIdx = this.shipList.findIndex(
+      (ship) => ship.index == index && ship.size == size
+    );
+
+    return this.shipList[shipIdx];
   }
 }
 
