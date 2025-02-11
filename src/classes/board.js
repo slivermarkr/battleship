@@ -19,6 +19,7 @@ export class Gameboard {
     this.dimension = dimension;
     this.gridMap = new Map();
     this.occupied = [];
+    this.bufferMultiple = [];
     this.hitMap = {
       hit: [],
       miss: [],
@@ -26,6 +27,14 @@ export class Gameboard {
     this.shipList = this.createArrayOfShipInstances(shipArrayInput);
 
     this.initGridMap();
+  }
+
+  getBufferWithMoreThanOneCount() {
+    const res = [];
+    for (const cell of this.gridMap.values()) {
+      if (cell.bufferCount > 1) res.push(cell);
+    }
+    return res;
   }
 
   initGridMap() {
@@ -49,6 +58,7 @@ export class Gameboard {
   }
 
   setShip(shipObj, coordinates) {
+    if (shipObj.isSet) throw new Error("SHIP ALREADY SET");
     if (shipObj.size !== coordinates.length)
       throw new Error("shipObj.size !== coordinates.length");
 
@@ -75,8 +85,11 @@ export class Gameboard {
     const bufferCluster = isBufferCluster(coordinates);
     for (const c of bufferCluster) {
       const cell = this.gridMap.get(c);
+      cell.bufferCount++;
       cell.isBuffer = true;
+      this.bufferMultiple = this.getBufferWithMoreThanOneCount();
     }
+    // console.log("BUFFER on board.js", bufferCluster);
   }
 
   getOccupiedCells() {

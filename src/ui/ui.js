@@ -55,12 +55,12 @@ export default class UI {
     grid.classList.add("occupied");
   }
 
-  static showFleetBox({ name, shipList }, cb) {
+  static showFleetBox({ name, shipList }, cb, captainName) {
     const fleetBox = document.createElement("div");
     fleetBox.classList.add("fleetSetupDiv");
-    fleetBox.setAttribute("data-commander", name);
+    fleetBox.setAttribute("data-captain", name);
     for (const shipObj of shipList) {
-      const shipEl = cb(shipObj);
+      const shipEl = cb(shipObj, captainName);
       fleetBox.appendChild(shipEl);
     }
     return fleetBox;

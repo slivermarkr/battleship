@@ -5,6 +5,7 @@ export default class GridCell {
     this.coor = coor;
     this.isOccupied = false;
     this.isBuffer = false;
+    this.bufferCount = 0;
     this.isAttacked = false;
     this.shipData = undefined;
     this.adjacentList = undefined;
@@ -17,10 +18,6 @@ export default class GridCell {
 
     this.shipData = shipObj;
     this.shipData.isSet = true;
-  }
-
-  getBuffer() {
-    return this.neighbors;
   }
 
   getAdjacentList() {
@@ -36,5 +33,6 @@ export default class GridCell {
     this.isBuffer = false;
     this.isAttacked = false;
     this.shipData = undefined;
+    this.bufferCount = 0;
   }
 }

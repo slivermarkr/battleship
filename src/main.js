@@ -1,5 +1,9 @@
 import { Player, Computer } from "./classes/player.js";
-import { isBufferCluster } from "./utils/fn.js";
+import {
+  getCoorAdjacentList,
+  isBufferCluster,
+  isCellClearForOccupation,
+} from "./utils/fn.js";
 import UI from "./ui/ui.js";
 
 export default class App {
@@ -20,20 +24,16 @@ export default class App {
       dragItemEl: undefined,
       dragObject: undefined,
       dropItemEl: undefined,
+      dragItemPreviousCluster: undefined,
     };
 
     this.activePlayer = undefined;
 
     this.root.insertAdjacentHTML("afterbegin", this.initHTML());
     this.refresh();
-    // this.displayArena();
 
     this.onLinkListener();
     this.onGridListener();
-
-    // randomly append ship
-    this.appendShipElementToGridEl();
-    this.shipDragEventListener();
   }
 
   refresh() {
@@ -47,38 +47,143 @@ export default class App {
     this.playerOne.board.reset();
     this.playerTwo.board.reset();
     this.displayArena();
-    // this.onShipListener();
+
+    // randomly append ship
+    this.appendShipElementToGridEl();
+    this.showOccupiedGrid(this.playerOne);
+    this.shipDragEventListener(this.playerOne.name);
+    this.gridDragDropEventListener();
+    // console.log(this.activePlayer.board.bufferMultiple);
+  }
+
+  gridDragEnter(gridEl) {
+    const isValid = isCellClearForOccupation(
+      gridEl.dataset.coordinate,
+      this.activePlayer.board
+    );
+    // console.log("ONDRAGENTER", isValid);
+    if (gridEl.closest("table").id !== this.activePlayer.name || !isValid) {
+      console.log("COLLISION DETECTED");
+      return;
+    }
+  }
+
+  gridDragover(e) {
+    e.preventDefault();
+    // console.log(e.target);
+    // if (
+    //   !isCellClearForOccupation(
+    //     e.target.dataset.coordinate,
+    //     this.activePlayer.board
+    //   )
+    // )
+    // console.log(e.target.dataset.coordinate, "isBuffer or occupied");
+  }
+
+  gridDragLeave(e) {}
+
+  //#dropevent
+  gridDrop(e) {
+    const table = e.target.closest("table");
+    if (table.id !== this.dragState.dragItemEl.dataset.captain) return;
+    const cellElement = e.target;
+    cellElement.appendChild(this.dragState.dragItemEl);
+  }
+
+  gridDragDropEventListener() {
+    const arena = this.root.querySelector("#arena");
+    arena.addEventListener("drop", (e) => {
+      if (e.target.classList.contains("grid")) {
+        this.gridDrop(e);
+      }
+    });
+
+    arena.addEventListener("dragleave", (e) => {
+      if (e.target.classList.contains("grid")) {
+        this.gridDragLeave(e);
+      }
+    });
+
+    arena.addEventListener("dragover", (e) => {
+      if (e.target.classList.contains("grid")) {
+        this.gridDragover(e);
+      }
+    });
+
+    arena.addEventListener("dragenter", (e) => {
+      if (e.target.classList.contains("grid")) {
+        this.gridDragEnter(e.target);
+      }
+    });
+  }
+
+  // #reset the cluster
+  resetTheShipClusterForAppending(shipObj) {
+    const table = this.root.querySelector(`table#${this.activePlayer.name}`);
+
+    const cluster = shipObj.cluster;
+    for (let i = 0; i < cluster.length; ++i) {
+      const cell = this.activePlayer.board.gridMap.get(cluster[i]);
+
+      cell.reset();
+      this.activePlayer.board.occupied =
+        this.activePlayer.board.getOccupiedCells();
+    }
   }
 
   onShipDragStart(ship, activePlayer) {
+    this.dragState.isValid = true;
     if (ship.dataset.captain !== this.activePlayer.name) return;
+
     const shipObj = activePlayer.board.getCorrespondingShip({
       size: ship.dataset.size,
       index: ship.dataset.index,
     });
-    console.log(shipObj);
+    this.dragState.dragObject = shipObj;
+    this.dragState.dragItemEl = ship;
+    this.dragState.dragItemPreviousCluster = shipObj.cluster;
+    this.resetTheShipClusterForAppending(shipObj);
+
+    shipObj.reset();
   }
 
   onShipDragging(ship) {
-    console.log("Dragging", ship);
+    // console.log("Dragging", ship);
   }
 
-  onShipDragEnd(ship) {
-    console.log("Dragend ", ship);
+  //#drageend
+  onShipDragEnd() {
+    console.log("DRAG ended");
+    const shipObj = this.activePlayer.board.getCorrespondingShip(
+      this.dragState.dragObject
+    );
+
+    this.activePlayer.board.setShip(
+      shipObj,
+      this.dragState.dragItemPreviousCluster
+    );
+    console.log(this.activePlayer.board.shipList);
   }
+
+  #shipDrag;
   shipDragEventListener() {
-    this.root.querySelectorAll(".ship").forEach((ship) => {
-      ship.addEventListener("dragstart", (e) => {
-        this.onShipDragStart(ship, this.activePlayer);
-      });
+    const arena = this.root.querySelector("#arena");
+    arena.addEventListener("dragstart", (e) => {
+      if (e.target.classList.contains("ship")) {
+        this.onShipDragStart(e.target, this.activePlayer);
+      }
+    });
 
-      ship.addEventListener("drag", (e) => {
-        this.onShipDragging(ship);
-      });
+    arena.addEventListener("drag", (e) => {
+      if (e.target.classList.contains("ship")) {
+        this.onShipDragging(e.target);
+      }
+    });
 
-      ship.addEventListener("dragend", (e) => {
-        this.onShipDragEnd(ship);
-      });
+    arena.addEventListener("dragend", (e) => {
+      if (e.target.classList.contains("ship")) {
+        this.onShipDragEnd(e.target);
+      }
     });
   }
 
@@ -100,6 +205,7 @@ export default class App {
       );
       cellEl.appendChild(shipElement);
     }
+    // this.shipDragEventListener();
   }
 
   playerToReceiveAttack(current) {
@@ -107,6 +213,7 @@ export default class App {
   }
 
   showOccupiedGrid({ name, board }) {
+    // console.log("SHOW", board.occupied);
     const table = this.root.querySelector(`table#${name}`);
     UI.clearTable(table);
     for (let i = 0; i < board.occupied.length; ++i) {
@@ -195,20 +302,25 @@ export default class App {
 
     //clears the default fleet position and renders a clean arena
     this.activePlayer.board.reset();
-    this.showOccupiedGrid(this.activePlayer);
+    // this.showOccupiedGrid(this.activePlayer);
 
     const arena = this.root.querySelector("#arena");
 
     const fleetBox = UI.showFleetBox(
       this.playerOne.board,
-      UI.createShipElement
+      UI.createShipElement,
+      this.activePlayer.name
     );
+
     UI.updateInfor(this.root, `Setting ship...`);
 
     this.root.querySelector(".rightSide").classList.add("hidden");
     this.root.querySelector(".linkGrp").classList.add("hidden");
 
-    arena.insertBefore(fleetBox, this.root.querySelector(".leftSide"));
+    const lArena = this.root.querySelector(".leftSide");
+    lArena.querySelectorAll(".ship").forEach((shipEl) => shipEl.remove());
+
+    arena.insertBefore(fleetBox, lArena);
   }
 
   setBufferClasslist({ shipList, name }) {
@@ -226,7 +338,7 @@ export default class App {
   }
 
   onChooseClick() {
-    console.log("CHOOSE");
+    // console.log("CHOOSE");
   }
 
   isFleetReady(shipList) {
@@ -235,6 +347,7 @@ export default class App {
 
   onReadyClick() {
     this.playerTwo.setShipRandomly();
+    this.showOccupiedGrid(this.playerOne);
     this.showOccupiedGrid(this.playerTwo);
     this.setBufferClasslist(this.playerTwo.board);
     if (
@@ -257,8 +370,9 @@ export default class App {
   }
 
   onRematchClick() {
-    console.log("Implement rematch");
+    // console.log("Implement rematch");
     this.refresh();
+
     this.root.querySelector(".rematchModal").close();
     this.root.querySelectorAll(".linkGrp").forEach((element) => {
       element.classList.toggle("hidden");
@@ -335,5 +449,5 @@ export default class App {
 (function init() {
   const entry = document.querySelector("#entry");
   const app = new App(entry);
-  console.log(app.playerOne);
+  // console.log(app.playerOne);
 })();
