@@ -58,8 +58,25 @@ TODO: add some UI
 
 - implement draggin and dropping
 
+- add some indicator for when the coor is not valid
+
 TODO: create a better algorithm to set ship randomly
 
 - there are times that the program goes into stackoveflow
 
-TODO
+TODO:
+
+- a function to be used when draggina and dropping ship with size > 1.
+- takes in the ships data and predict the next coordinates to be used
+
+<!-- TODO: on resetClick -->
+<!-- - reset the board.api not just the ui -->
+
+<!-- TODO:
+
+- when big ships and drag. I can't drop on the cell next to it.
+- maybe change the ships z-index -->
+
+BUG #69
+
+- dragevent is fucked up, the dragState object that saves the shipObj info before i reset, doesn't always pick up. resulting in an undefined cluster variable.

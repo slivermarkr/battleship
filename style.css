@@ -177,3 +177,11 @@ table {
 .showRed {
   border: 2px solid red;
 }
+
+.dragover {
+  border: rgb(176, 255, 4) 2px solid;
+}
+
+.invi {
+  z-index: -1;
+}

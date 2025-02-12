@@ -148,3 +148,19 @@ describe("getCoorAdjacentCorner", function () {
     );
   });
 });
+
+describe("#calculatePossibleCluster", function () {
+  // for the ship with size 3
+  const board = new Gameboard({ name: "You", dimension: 10 });
+  const coor = "A,1";
+  const shipSize = 3;
+  const orientation = "h";
+  // calculate possible cluster
+  // if the e.target.coordinate is "A,1" and the orientation is "h" function should return ["A,2", "A,3"]
+  const result = calculatePossibleCluster(
+    "A,1",
+    { size: shipSize, orientation },
+    board
+  );
+  expect(result).toEqual(expect.arrayContaining(["A,2", "A,3"]));
+});

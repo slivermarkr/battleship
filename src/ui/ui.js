@@ -1,6 +1,16 @@
 import { generateGridArray } from "../utils/fn.js";
 
 export default class UI {
+  static dragoverHl(coordinates, table) {
+    const tableEl = root.querySelector(`table#${table}`);
+    for (let i = 0; i < coordinates.length; ++i) {
+      const gridEl = tableEl.querySelector(
+        `.grid[data-coordinate="${coordinates[i]}"]`
+      );
+      gridEl.classList.add("dragover");
+    }
+  }
+
   static onDragStart(ship) {
     console.log("You start dragging " + ship);
   }
