@@ -25,30 +25,14 @@ done:
 
 <!-- TODO: setShipElements on load -->
 
-TODO: add some UI
-
-- dialog when choosing opponent
-
-- when the game is over check who wins and dynamically change the dialog to green if user wins and red if lose.
-
-- implement draggin and dropping
-
-TODO: create a better algorithm to set ship randomly
-
-- there are times that the program goes into stackoveflow
-
-TODO: about the drag event
-
-- when a ship is first dragg. get the ship.cluster and reset it so I can append into the corresponding grid
-
+<!-- - when a ship is first dragg. get the ship.cluster and reset it so I can append into the corresponding grid
 - Able to drag a ship and update the api and dom simultaneously but it only works for ship with size 1.
 - I need to make the feature work for other sized ship. (diversity baby)
 - find a way to know If the cell is being used by other ship as buffer before resetting it.
 
-- explore the dragenter option. when a ship enter a grid check for the grid ajacenList. if it's occupied do not reset the grid's isBuffer status.
+ - explore the dragenter option. when a ship enter a grid check for the grid ajacenList. if it's occupied do not reset the grid's isBuffer status.
 
-- explore of dragend event
-
+ - explore of dragend event
 - ondragstart
 
   - when you drag a shipEl reset the shipObj.reset(),
@@ -61,3 +45,21 @@ TODO: about the drag event
   - when you drop the shipEl on an INVALID coor. since we preemptively reset the ship and the cluster. \*this.shipPreviousCluter stores the cluster so we can setTheShip back to itt's orinal position.
 
   - when the you successfully setShip in place makes sure the buffer is updated
+
+TOFIX: the isBuffer from board.js and main.js aren't in sync they tell difference isBuffer status and and bufferCount -->
+
+<!-- TODO: about the drag event -->
+
+TODO: add some UI
+
+- dialog when choosing opponent
+
+- when the game is over check who wins and dynamically change the dialog to green if user wins and red if lose.
+
+- implement draggin and dropping
+
+TODO: create a better algorithm to set ship randomly
+
+- there are times that the program goes into stackoveflow
+
+TODO

@@ -89,6 +89,7 @@ export class Gameboard {
       cell.isBuffer = true;
       this.bufferMultiple = this.getBufferWithMoreThanOneCount();
     }
+    // console.log("buffer with muptiple ships", this.bufferMultiple);
     // console.log("BUFFER on board.js", bufferCluster);
   }
 
@@ -143,6 +144,20 @@ export class Gameboard {
     );
 
     return this.shipList[shipIdx];
+  }
+
+  resetShipClusterAdjacentList(shipClusterArray) {
+    for (let i = 0; i < shipClusterArray.length; ++i) {
+      const cell = this.gridMap.get(shipClusterArray[i]);
+      //it's cell.bufferCount not cell.isBuffer LOL
+      if (cell.bufferCount > 1) {
+        cell.bufferCount--;
+      } else {
+        cell.reset();
+      }
+
+      this.bufferMultiple = this.getBufferWithMoreThanOneCount();
+    }
   }
 }
 

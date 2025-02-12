@@ -21,6 +21,7 @@ export default class App {
     };
 
     this.dragState = {
+      isValid: true,
       dragItemEl: undefined,
       dragObject: undefined,
       dropItemEl: undefined,
@@ -61,7 +62,11 @@ export default class App {
       gridEl.dataset.coordinate,
       this.activePlayer.board
     );
-    // console.log("ONDRAGENTER", isValid);
+    console.log("ONDRAGENTER", isValid, gridEl.dataset.coordinate);
+    console.log(
+      "isThisaBuffer",
+      this.activePlayer.board.gridMap.get(gridEl.dataset.coordinate)
+    );
     if (gridEl.closest("table").id !== this.activePlayer.name || !isValid) {
       console.log("COLLISION DETECTED");
       return;
@@ -85,9 +90,37 @@ export default class App {
   //#dropevent
   gridDrop(e) {
     const table = e.target.closest("table");
-    if (table.id !== this.dragState.dragItemEl.dataset.captain) return;
+    if (table.id !== this.dragState.dragItemEl.dataset.captain) {
+      this.dragState.isValid = false;
+      this.dragState.dragObject.cluster =
+        this.dragState.dragItemPreviousCluster;
+      console.log("INVALID", this.dragState.dragObject);
+      return;
+    }
+
     const cellElement = e.target;
-    cellElement.appendChild(this.dragState.dragItemEl);
+    const isValidCoor = isCellClearForOccupation(
+      cellElement.dataset.coordinate,
+      this.activePlayer.board
+    );
+
+    if (isValidCoor) {
+      this.dragState.isValid = true;
+      cellElement.appendChild(this.dragState.dragItemEl);
+
+      const shipObj = this.activePlayer.board.getCorrespondingShip(
+        this.dragState.dragObject
+      );
+
+      this.activePlayer.board.setShip(shipObj, [
+        cellElement.dataset.coordinate,
+      ]);
+
+      console.log("DROP SUCCESS", this.activePlayer.board.occupied);
+    } else {
+      console.log("INVALIDCOOR");
+      this.dragState.isValid = false;
+    }
   }
 
   gridDragDropEventListener() {
@@ -122,6 +155,7 @@ export default class App {
     const table = this.root.querySelector(`table#${this.activePlayer.name}`);
 
     const cluster = shipObj.cluster;
+    // this LOOP only reset the CLUSTER
     for (let i = 0; i < cluster.length; ++i) {
       const cell = this.activePlayer.board.gridMap.get(cluster[i]);
 
@@ -129,10 +163,20 @@ export default class App {
       this.activePlayer.board.occupied =
         this.activePlayer.board.getOccupiedCells();
     }
+    // this resets the buffer hopefully? maybe
+    console.log("buffercluster", isBufferCluster(cluster));
+    this.activePlayer.board.resetShipClusterAdjacentList(
+      isBufferCluster(cluster)
+    );
+
+    for (const i of isBufferCluster(cluster)) {
+      const cell = this.activePlayer.board.gridMap.get(i);
+      console.log("check on cell status", cell);
+    }
   }
 
   onShipDragStart(ship, activePlayer) {
-    this.dragState.isValid = true;
+    // this.dragState.isValid = true;
     if (ship.dataset.captain !== this.activePlayer.name) return;
 
     const shipObj = activePlayer.board.getCorrespondingShip({
@@ -153,16 +197,21 @@ export default class App {
 
   //#drageend
   onShipDragEnd() {
-    console.log("DRAG ended");
-    const shipObj = this.activePlayer.board.getCorrespondingShip(
-      this.dragState.dragObject
-    );
+    if (!this.dragState.isValid) {
+      const shipObj = this.activePlayer.board.getCorrespondingShip(
+        this.dragState.dragObject
+      );
+      console.log(
+        "THIS should not be undefined",
 
-    this.activePlayer.board.setShip(
-      shipObj,
-      this.dragState.dragItemPreviousCluster
-    );
-    console.log(this.activePlayer.board.shipList);
+        this.dragState.dragItemPreviousCluster
+      );
+      this.activePlayer.board.setShip(
+        shipObj,
+        this.dragState.dragItemPreviousCluster
+      );
+      console.log("dragend herebitch", this.dragState.dragObject);
+    }
   }
 
   #shipDrag;

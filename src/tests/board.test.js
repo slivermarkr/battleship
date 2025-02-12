@@ -1,7 +1,7 @@
 import { Gameboard } from "../classes/board";
 import Ship from "../classes/ship";
 import GridCell from "../classes/cell";
-import { isValidCoor, isBufferCluster } from "../utils/fn";
+import { isValidCoor, isBufferCluster, getCoorAdjacentList } from "../utils/fn";
 
 const input = {
   name: "Player One",
@@ -108,6 +108,16 @@ describe("board.receiveAttack()", function () {
   });
 });
 
+describe("#if ship.isSet = true return ERROR", function () {
+  it("ERROR: SHIP ALREADY SET", () => {
+    const board = new Gameboard(input);
+    const shipOne = board.shipList[0];
+    const coor = "A,1";
+    board.setShip(shipOne, [coor]);
+    expect(() => board.setShip(shipOne, ["B,2"])).toThrow("SHIP ALREADY SET");
+  });
+});
+
 describe("board.setShip(shipParams, coordinates)", function () {
   const coordinates = ["A,1", "A,2", "A,3"];
   const ship = new Ship({ index: 1, size: 3 });
@@ -150,6 +160,7 @@ describe("board.setShip(shipParams, coordinates)", function () {
   });
 
   it("return an Error if user tries to setShip in an occupied cell: 'coordinate you're trying to place ship is already occupied'", () => {
+    const ship = new Ship({ size: 3, index: 2 }); //created a different ship instance
     expect(() => board.setShip(ship, coordinates)).toThrow(
       "coordinate is already occupied"
     );
@@ -307,5 +318,20 @@ describe("get shipObject from the board.shiplist", function () {
     expect(board.getCorrespondingShip({ size: 4, index: 0 })).toEqual(
       shipIdxOneTypeFour
     );
+  });
+});
+
+describe("reset the clusters adjacentList", function () {
+  it("test for a ship with size#1", () => {
+    // const board = new Gameboard(input);
+    // const shipOne = board.shipList[0];
+    // const coor = "A,1";
+    // board.setShip(shipOne, [coor]);
+    // const clusterAdjList = isBufferCluster(getCoorAdjacentList(coor));
+    // board.resetShipClusterAdjacentList(clusterAdjList);
+    // for (let i = 0; i < clusterAdjList.length; ++i) {
+    //   const cell = board.gridMap.get(clusterAdjList[i]);
+    //   expect(cell.isBuffer).toBe(false);
+    // }
   });
 });

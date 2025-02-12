@@ -53,7 +53,7 @@ export function getCoorAdjacentCorner(coor) {
     });
 }
 
-console.log(getCoorAdjacentCorner("A,1"));
+// console.log(getCoorAdjacentCorner("A,1"));
 
 export function getCoorAdjacentList(coor) {
   if (!isValidCoor(coor)) throw new Error(`"${coor}" is NOT VALID COORDINATE`);
