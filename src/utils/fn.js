@@ -161,25 +161,51 @@ export function generateRandomCluster({ size }, { occupied, gridMap }) {
 export default function calculatePossibleCluster(
   coor,
   { size, orientation },
-  { gridMap } = {}
+  { gridMap, dimension } = {}
 ) {
   const coorInt = convertCoorToInt(coor); // if given "A,1" return [1,1]
-  const result = [];
+  let result = [];
   let nextCoor;
+  let isOverFlow = false;
 
   // if h then increase the right side
-  if (orientation == "h") {
-    for (let i = 1; i < size; ++i) {
+  for (let i = 1; i < size; ++i) {
+    if (orientation == "h") {
       nextCoor = `${String.fromCharCode(coorInt[0] + 64)},${coorInt[1] + i}`;
-      if (isValidCoor(nextCoor)) result.push(nextCoor);
-    }
-  } else {
-    for (let i = 1; i < size; ++i) {
+    } else if (orientation == "v") {
       nextCoor = `${String.fromCharCode(coorInt[0] + i + 64)},${coorInt[1]}`;
-      if (isValidCoor(nextCoor)) result.push(nextCoor);
+    }
+    if (isValidCoor(nextCoor)) {
+      result.push(nextCoor);
+    } else {
+      isOverFlow = true;
+      break;
     }
   }
+
+  if (isOverFlow) {
+    //we need a new starting point dimension - size
+    result = [];
+
+    console.log(isOverFlow);
+    for (let i = dimension - size; i < dimension; ++i) {
+      if (orientation == "h") {
+        nextCoor = `${String.fromCharCode(coorInt[0] + 64)},${i}`;
+      } else if (orientation == "v") {
+        nextCoor = `${String.fromCharCode(64 + i)},${coorInt[1]}`;
+      }
+
+      result.push(nextCoor);
+    }
+  } else {
+    result.unshift(coor);
+  }
   console.log(result);
+  return result;
 }
 
-calculatePossibleCluster("A,10", { size: 3, orientation: "h" });
+calculatePossibleCluster(
+  "A,1",
+  { size: 4, orientation: "v" },
+  { dimension: 10 }
+);
