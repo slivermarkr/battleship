@@ -1,6 +1,16 @@
 import { generateGridArray } from "../utils/fn.js";
 
 export default class UI {
+  static changeShipOrientation(shipEl) {
+    const orientation = shipEl.dataset.orientation;
+
+    if (orientation == "v") {
+      shipEl.setAttribute("data-orientation", "h");
+    } else {
+      shipEl.setAttribute("data-orientation", "v");
+    }
+  }
+
   static showTheRightSideArenaWhenShipAllSet(root) {
     root.querySelector(".rightSide").classList.toggle("hidden");
     root.querySelector(".linkGrp").classList.toggle("hidden");
