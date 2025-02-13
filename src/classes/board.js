@@ -52,8 +52,10 @@ export class Gameboard {
       const ship = cell.shipData;
       ship.isHit();
       this.hitMap.hit.push(coor);
+      return true;
     } else {
       this.hitMap.miss.push(coor);
+      return false;
     }
   }
 

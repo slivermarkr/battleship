@@ -159,16 +159,16 @@ table {
   border: 2px solid rgb(136, 136, 226);
 }
 
-.hit {
+/* .hit {
   border: 2px solid red;
-}
+} */
 
 .miss {
-  border: 2px solid rgb(255, 251, 4);
+  background-color: rgba(92, 92, 92, 0.608);
 }
 
 .revealed {
-  background-color: rgb(202, 180, 152);
+  background-color: rgba(92, 92, 92, 0.608);
 }
 
 .buffer {
@@ -188,4 +188,57 @@ table {
 
 .dragoverred {
   border: 3px solid rgb(236, 67, 67);
+}
+
+.disableShip {
+  z-index: -1;
+}
+
+.showXmark {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 1rem;
+  z-index: 10;
+  position: relative;
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: black;
+}
+
+.grid {
+  position: relative;
+}
+.showXmark::after {
+  content: "|";
+  color: red;
+  font-size: 2.5rem;
+  position: absolute;
+  transform: rotate(45deg);
+  bottom: 0.8rem;
+  left: 0.7rem;
+}
+
+.showXmark::before {
+  content: "|";
+  color: red;
+  font-size: 2.5rem;
+  bottom: 0.8rem;
+  left: 0.45rem;
+  position: absolute;
+  transform: rotate(-45deg);
+}
+
+.isSunk {
+  border: 2px solid red;
+}
+
+.missDot {
+  position: absolute;
+  background-color: black;
+  border-radius: 5rem;
+  width: 0.4rem;
+  height: 0.4rem;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }

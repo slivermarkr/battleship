@@ -1,5 +1,9 @@
 import { Gameboard } from "./board.js";
-import { generateRandomCluster, getRandomOrientation } from "../utils/fn.js";
+import {
+  generateRandomCluster,
+  getRandomOrientation,
+  generateGridArray,
+} from "../utils/fn.js";
 
 export class Player {
   constructor({ name, dimension = 10 }) {
@@ -29,7 +33,20 @@ export class Player {
 export class Computer extends Player {
   constructor({ name = "Computer", dimension }) {
     super({ name, dimension });
+    this.gridYetToAttack = generateGridArray(this.dimension);
+    this.hitList = [];
+  }
+
+  attackRandomly() {
+    const randomNum = Math.floor(Math.random() * this.gridYetToAttack.length);
+    console.log(randomNum);
+    const coor = this.gridYetToAttack[randomNum];
+    this.gridYetToAttack.splice(randomNum, 1);
+    console.log(this.gridYetToAttack.length);
+    console.log(coor);
+    // return coor;
   }
 }
-// const com = new Computer({});
-// com.setShipRandomly();
+const com = new Computer({});
+
+com.attackRandomly();

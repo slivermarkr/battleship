@@ -209,3 +209,5 @@ export function calculatePossibleCluster(
 //   { size: 2, orientation: "v" },
 //   { dimension: 10 }
 // );
+
+console.log(generateGridArray(10));

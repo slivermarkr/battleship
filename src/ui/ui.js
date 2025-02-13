@@ -1,6 +1,22 @@
 import { generateGridArray } from "../utils/fn.js";
 
 export default class UI {
+  static shipSunk(coor, table) {
+    for (let i = 0; i < coor.length; ++i) {
+      table
+        .querySelector(`.grid[data-coordinate="${coor[i]}"]`)
+        .classList.add("isSunk");
+    }
+  }
+
+  static isReadyForBatlle(root) {
+    root
+      .querySelectorAll(".ship")
+      .forEach((ship) => ship.classList.add("disableShip"));
+
+    root.querySelectorAll(".grid").forEach((grid) => (grid.style.zIndex = 100));
+  }
+
   static changeShipOrientation(shipEl) {
     const orientation = shipEl.dataset.orientation;
 
@@ -87,13 +103,18 @@ export default class UI {
   static hitCellHl(coor, table, adjacentCorner) {
     const cell = table.querySelector(`.grid[data-coordinate="${coor}"]`);
     cell.classList.add("hit");
-
+    const zContainer = cell.parentElement.querySelector(".z");
+    zContainer.classList.add("showXmark");
+    console.log(zContainer);
     UI.showBuffer(adjacentCorner, table);
   }
 
   static missCellHl(coor, table) {
     const cell = table.querySelector(`.grid[data-coordinate="${coor}"]`);
     cell.classList.add("miss");
+    const zContainer = cell.parentElement.querySelector(".z");
+    console.log(zContainer);
+    zContainer.classList.add("missDot");
   }
 
   static clearTable(table) {

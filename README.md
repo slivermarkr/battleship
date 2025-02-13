@@ -65,19 +65,35 @@ TOFIX: the isBuffer from board.js and main.js aren't in sync they tell differenc
 
 <!-- - implement draggin and dropping -->
 
+<!-- TODO: change ship orientation on click -->
+
 TODO: add some UI
 
 - dialog when choosing opponent
 
 - when the game is over check who wins and dynamically change the dialog to green if user wins and red if lose.
 
-- add some indicator for when the coor is not valid
+<!-- - add some indicator for when the coor is not valid -->
 
 TODO: create a better algorithm to set ship randomly
 
 - there are times that the program goes into stackoveflow
 
-TODO: change ship orientation on click
 BUG #69
 
 - dragevent is fucked up, the dragState object that saves the shipObj info before i reset, doesn't always pick up. resulting in an undefined cluster variable.
+
+BUG #420
+
+- when a ship is rotated the buffer is lost
+
+TODO:
+
+- gameplay with ships
+<!-- - remove the ship z-index so grids are clickable
+- add some style depending wether it's a hit or a miss -->
+
+TODO:
+
+- allow computer to hit random grid
+- make algorithm that allows computer to pick adjacent cell if it hits a ship.

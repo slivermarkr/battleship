@@ -98,6 +98,7 @@ export default class App {
     const arena = this.root.querySelector("#arena");
     arena.addEventListener("click", (e) => {
       if (e.target.classList.contains("ship")) {
+        if (this.controller.isReady) return;
         const shipEl = e.target;
         const shipObj = this.activePlayer.board.getCorrespondingShip({
           size: shipEl.dataset.size,
@@ -130,7 +131,8 @@ export default class App {
             )
             .appendChild(shipEl);
           UI.changeShipOrientation(shipEl);
-          console.log(this.activePlayer.board.occupied);
+          UI.updateInfor(this.root, "Ship rotated.");
+          // console.log(this.activePlayer.board.occupied);
         } else {
           console.log("COLLISION");
         }
@@ -169,8 +171,8 @@ export default class App {
       UI.dragoverHl(res, table);
     } else {
       UI.dragoverHlRed(res, table);
+      UI.updateInfor(this.root, "can't place ship in a buffer");
     }
-    // UI.dragoverHl(res, table);
   }
 
   gridDragLeave(e) {
@@ -253,6 +255,7 @@ export default class App {
       );
 
       this.activePlayer.board.setShip(shipObj, cluster);
+      UI.updateInfor(this.root, "Ship Placed Succesfully.");
     } else {
       this.dragState.isValid = false;
       this.dragState.dragObject.cluster =
@@ -435,9 +438,11 @@ export default class App {
     if (!ship.isSunk()) return;
     const coordinateBuffer = isBufferCluster(ship.cluster);
     UI.showBuffer(coordinateBuffer, table);
+    UI.shipSunk(ship.cluster, table);
   }
 
   attack(coor, playerToBeAttacked, table) {
+    console.log("HIT here", coor);
     const cell = playerToBeAttacked.board.gridMap.get(coor);
     if (cell.isAttacked) return;
 
@@ -559,6 +564,8 @@ export default class App {
       this.root.querySelectorAll(".linkGrp").forEach((element) => {
         element.classList.toggle("hidden");
       });
+
+      // UI.isReadyForBatlle(this.root);
     }
   }
 
