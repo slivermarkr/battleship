@@ -3,6 +3,8 @@ import {
   generateRandomCluster,
   getRandomOrientation,
   generateGridArray,
+  getCoorAdjacentCorner,
+  getCoorAdjacentList,
 } from "../utils/fn.js";
 
 export class Player {
@@ -35,18 +37,46 @@ export class Computer extends Player {
     super({ name, dimension });
     this.gridYetToAttack = generateGridArray(this.dimension);
     this.hitList = [];
+    this.bufferList = [];
   }
 
+  //   reset() {
+  // this.hitList = []
+  // this.bufferList = []
+  //   }
   attackRandomly() {
+    if (this.gridYetToAttack.length === 0) return;
     const randomNum = Math.floor(Math.random() * this.gridYetToAttack.length);
-    console.log(randomNum);
+
     const coor = this.gridYetToAttack[randomNum];
+    const coorCorner = new Set(getCoorAdjacentCorner(coor));
+
     this.gridYetToAttack.splice(randomNum, 1);
-    console.log(this.gridYetToAttack.length);
-    console.log(coor);
-    // return coor;
+
+    console.log("coor options", this.gridYetToAttack);
+    console.log("COMPUTER COOR", coor);
+    return coor;
+  }
+
+  removeHitShipCorner(cluster) {
+    const coorCorner = new Set(cluster);
+    this.gridYetToAttack = this.gridYetToAttack.filter(
+      (coor) => !coorCorner.has(coor)
+    );
+  }
+
+  removeSunkenCluster(cluster) {
+    const coorCorner = new Set(cluster);
+    this.gridYetToAttack = this.gridYetToAttack.filter(
+      (coor) => !coorCorner.has(coor)
+    );
   }
 }
 const com = new Computer({});
 
-com.attackRandomly();
+// com.attackRandomly();
+// com.attackRandomly();
+// com.attackRandomly();
+// com.attackRandomly();
+// console.log(com.gridYetToAttack.length);
+// console.log(com instanceof Player);

@@ -93,7 +93,16 @@ TODO:
 <!-- - remove the ship z-index so grids are clickable
 - add some style depending wether it's a hit or a miss -->
 
+<!-- TODO: -->
+
+<!-- - allow computer to hit random grid -->
+
+- make algorithm that allows computer to pick adjacent cell if it hits a ship.
+
 TODO:
 
-- allow computer to hit random grid
-- make algorithm that allows computer to pick adjacent cell if it hits a ship.
+- the the game is over and rematch button is click the dragevents aren't doing it's thing.
+
+- when the ship is sunk remove the ship
+
+- the computer random attacks slow the pc down for some reason

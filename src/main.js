@@ -1,6 +1,7 @@
 import { Player, Computer } from "./classes/player.js";
 import {
   calculatePossibleCluster,
+  getCoorAdjacentCorner,
   getCoorAdjacentList,
   isBufferCluster,
   isCellClearForOccupation,
@@ -34,11 +35,13 @@ export default class App {
     this.root.insertAdjacentHTML("afterbegin", this.initHTML());
     this.refresh();
 
-    this.onLinkListener();
     this.onGridListener();
+    this.onLinkListener();
   }
 
   refresh() {
+    this.playerOne.board.reset();
+
     this.activePlayer = this.playerOne;
 
     this.controller.isReady = false;
@@ -46,14 +49,18 @@ export default class App {
     this.controller.comboCount = false;
     this.controller.isGameOver = false;
 
-    this.playerOne.board.reset();
+    this.dragState.isValid = true;
+    this.dragState.dragItemEl = undefined;
+    this.dragState.dragObject = undefined;
+    this.dragState.dragItemPreviousCluster = undefined;
+
+    this.playerTwo = new Computer({});
     this.playerTwo.board.reset();
     this.displayArena();
-
     // randomly append ship
     this.appendShipElementToGridEl();
     // this.showOccupiedGrid(this.playerOne);
-    this.shipDragEventListener(this.playerOne.name);
+    this.shipDragEventListener(this.playerOne);
     this.gridDragDropEventListener();
     this.onClickListener();
   }
@@ -326,6 +333,8 @@ export default class App {
       size: ship.dataset.size,
       index: ship.dataset.index,
     });
+    console.log("Board status", this.activePlayer);
+    console.log("draggin this bitch", shipObj);
     this.dragState.dragObject = shipObj;
     this.dragState.dragItemEl = ship;
     this.dragState.dragItemPreviousCluster = shipObj.cluster;
@@ -341,6 +350,7 @@ export default class App {
     ship.classList.remove("invi");
     ship.classList.remove("hidden");
     if (!this.dragState.isValid) {
+      console.log("353 onshipDragend");
       const shipObj = this.activePlayer.board.getCorrespondingShip(
         this.dragState.dragObject
       );
@@ -352,7 +362,7 @@ export default class App {
   }
 
   #shipDrag;
-  shipDragEventListener() {
+  shipDragEventListener(player) {
     const arena = this.root.querySelector("#arena");
     arena.addEventListener("dragstart", (e) => {
       if (this.controller.isReady) {
@@ -360,7 +370,7 @@ export default class App {
         return;
       }
       if (e.target.classList.contains("ship")) {
-        this.onShipDragStart(e.target, this.activePlayer);
+        this.onShipDragStart(e.target, player);
       }
     });
 
@@ -403,7 +413,6 @@ export default class App {
       );
       cellEl.appendChild(shipElement);
     }
-    // this.shipDragEventListener();
   }
 
   playerToReceiveAttack(current) {
@@ -430,7 +439,15 @@ export default class App {
           ? "You Lose! :("
           : `Congratulations! You Win!`;
       UI.updateInfor(this.root, message);
-      UI.showRematchModal(this.root);
+      const winner = this.activePlayer instanceof Computer ? "loser" : "winner";
+      UI.showRematchModal(
+        this.root,
+        winner,
+        this.activePlayer instanceof Computer ? "You lose!" : "You Win!"
+      );
+      // this.refresh();
+      // this.playerOne.board.reset();
+      // this.playerTwo.board.reset();
     }
   }
 
@@ -439,15 +456,29 @@ export default class App {
     const coordinateBuffer = isBufferCluster(ship.cluster);
     UI.showBuffer(coordinateBuffer, table);
     UI.shipSunk(ship.cluster, table);
+    return coordinateBuffer;
   }
 
+  //#attack
   attack(coor, playerToBeAttacked, table) {
-    console.log("HIT here", coor);
+    // console.log("HIT here", coor);
     const cell = playerToBeAttacked.board.gridMap.get(coor);
-    if (cell.isAttacked) return;
+    if (cell.isAttacked && this.controller.isGameOver) return;
 
-    playerToBeAttacked.board.receiveAttack(coor);
+    const isAttackAHit = playerToBeAttacked.board.receiveAttack(coor);
 
+    if (isAttackAHit && this.activePlayer instanceof Computer) {
+      this.activePlayer.removeHitShipCorner(cell.getAdjacentCorner());
+
+      const nextPlayer = this.playerToReceiveAttack(this.activePlayer);
+      setTimeout(() => {
+        this.attack(
+          this.activePlayer.attackRandomly(),
+          nextPlayer,
+          this.root.querySelector(`table#${nextPlayer.name}`)
+        );
+      }, 600);
+    }
     if (cell.isOccupied) {
       const ship = cell.shipData;
       this.controller.comboCount++;
@@ -457,7 +488,10 @@ export default class App {
       );
       UI.hitCellHl(coor, table, cell.getAdjacentCorner());
 
-      this.checkForShipSinking(ship, table);
+      const clusterOfSunkenShip = this.checkForShipSinking(ship, table);
+      if (this.activePlayer instanceof Computer) {
+        this.activePlayer.removeSunkenCluster(clusterOfSunkenShip);
+      }
       // check if the playerTobeAttacked.fleetisDefeated
       this.checkForWin(
         playerToBeAttacked.board.isFleetDefeated(),
@@ -468,6 +502,17 @@ export default class App {
       this.controller.comboCount = 0;
       UI.missCellHl(coor, table);
       this.activePlayer = playerToBeAttacked;
+
+      if (this.activePlayer instanceof Computer) {
+        const nextPlayer = this.playerToReceiveAttack(this.activePlayer);
+        setTimeout(() => {
+          this.attack(
+            this.activePlayer.attackRandomly(),
+            nextPlayer,
+            this.root.querySelector(`table#${nextPlayer.name}`)
+          );
+        }, 600);
+      }
     }
   }
 
@@ -500,15 +545,16 @@ export default class App {
     this.controller.isResetMode = true;
 
     //clears the default fleet position and renders a clean arena
-    this.activePlayer.board.reset();
+    this.playerOne.board.reset();
+    console.log("RESET", this.playerOne.board);
     // this.showOccupiedGrid(this.activePlayer);
 
     const arena = this.root.querySelector("#arena");
 
     const fleetBox = UI.showFleetBox(
-      this.activePlayer.board,
+      this.playerOne.board,
       UI.createShipElement,
-      this.activePlayer.name
+      this.playerOne.name
     );
 
     // this.showOccupiedGrid(this.activePlayer);
@@ -571,7 +617,6 @@ export default class App {
 
   onRematchClick() {
     this.refresh();
-
     this.root.querySelector(".rematchModal").close();
     this.root.querySelectorAll(".linkGrp").forEach((element) => {
       element.classList.toggle("hidden");
@@ -613,6 +658,7 @@ export default class App {
     return `
       <p class="info">Prepare Your Fleet</p>
       <dialog class="rematchModal">
+      <span class="rematchModalSpan"></span>
       <button class="rematchBtn">Play Again</dialog>
       </dialog>
       <dialog class="chooseModal">

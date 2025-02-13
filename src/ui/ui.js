@@ -34,7 +34,7 @@ export default class UI {
   }
 
   static removeGridHL(coordinates, hlName, table) {
-    console.log(table);
+    // console.log(table);
     for (const c of coordinates) {
       const cellElement = table.querySelector(`.grid[data-coordinate="${c}"]`);
       cellElement.classList.remove(hlName);
@@ -68,7 +68,7 @@ export default class UI {
   }
 
   static onDragStart(ship) {
-    console.log("You start dragging " + ship);
+    // console.log("You start dragging " + ship);
   }
 
   static bufferGridHl(root, cluster, table) {
@@ -85,8 +85,11 @@ export default class UI {
     root.querySelector(".info").textContent = message;
   }
 
-  static showRematchModal(root) {
+  static showRematchModal(root, className, message) {
     const modal = root.querySelector(".rematchModal");
+    modal.classList.add(className);
+    const span = modal.querySelector(".rematchModalSpan");
+    span.textContent = message;
     modal.showModal();
   }
 
@@ -105,7 +108,7 @@ export default class UI {
     cell.classList.add("hit");
     const zContainer = cell.parentElement.querySelector(".z");
     zContainer.classList.add("showXmark");
-    console.log(zContainer);
+    // console.log(zContainer);
     UI.showBuffer(adjacentCorner, table);
   }
 
@@ -113,7 +116,7 @@ export default class UI {
     const cell = table.querySelector(`.grid[data-coordinate="${coor}"]`);
     cell.classList.add("miss");
     const zContainer = cell.parentElement.querySelector(".z");
-    console.log(zContainer);
+    // console.log(zContainer);
     zContainer.classList.add("missDot");
   }
 
