@@ -69,8 +69,9 @@ TODO:
 - a function to be used when draggina and dropping ship with size > 1.
 - takes in the ships data and predict the next coordinates to be used
 
-<!-- TODO: on resetClick -->
-<!-- - reset the board.api not just the ui -->
+- use the calcalatePossibleCluster to determine if the elements being dragover is iccupied or buffer
+  <!-- TODO: on resetClick -->
+  <!-- - reset the board.api not just the ui -->
 
 <!-- TODO:
 

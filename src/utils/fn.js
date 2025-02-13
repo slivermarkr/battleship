@@ -158,7 +158,7 @@ export function generateRandomCluster({ size }, { occupied, gridMap }) {
 }
 
 // there's a better way of doing these but for now this will hopefully do.
-export default function calculatePossibleCluster(
+export function calculatePossibleCluster(
   coor,
   { size, orientation },
   { gridMap, dimension } = {}

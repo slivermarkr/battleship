@@ -1,5 +1,6 @@
 import { Player, Computer } from "./classes/player.js";
 import {
+  calculatePossibleCluster,
   getCoorAdjacentList,
   isBufferCluster,
   isCellClearForOccupation,
@@ -71,6 +72,15 @@ export default class App {
     e.preventDefault();
     e.target.classList.add("dragover");
 
+    const res = calculatePossibleCluster(
+      e.target.dataset.coordinate,
+      {
+        size: this.dragState.dragItemEl.dataset.size,
+        orientation: this.dragState.dragItemEl.dataset.orientation,
+      },
+      this.activePlayer.board
+    );
+    console.log("possibleCluster", res);
     // console.log(e.target);
     // if (
     //   !isCellClearForOccupation(
@@ -85,10 +95,27 @@ export default class App {
     e.target.classList.remove("dragover");
   }
 
+  checkIfClusterIsValid(cluster) {
+    let isCellValid = true;
+    for (let i = 0; i < cluster.length; ++i) {
+      if (isCellClearForOccupation(cluster[i], this.activePlayer.board)) {
+        isCellValid = true;
+      } else {
+        return false;
+      }
+    }
+
+    return isCellValid;
+    // return cluster.some(cell => isCellClearForOccupation(cell))
+  }
+
   //#dropevent
   gridDrop(e) {
     e.target.classList.remove("dragover");
     const table = e.target.closest("table");
+
+    // i added this for when the drop target is undefined since the ship.object is resetted when dragStart I want to load the save cluster back to i can append/set to the previous cluster
+    // i don't know if it's actually working lol
     if (table.id !== this.dragState.dragItemEl.dataset.captain) {
       this.dragState.isValid = false;
       this.dragState.dragObject.cluster =
@@ -103,17 +130,28 @@ export default class App {
       this.activePlayer.board
     );
 
-    if (isValidCoor) {
+    const cluster = calculatePossibleCluster(e.target.dataset.coordinate, {
+      orientation: this.dragState.dragItemEl.dataset.orientation,
+      size: this.dragState.dragItemEl.dataset.size,
+    });
+
+    const clusterCheck = this.checkIfClusterIsValid(
+      cluster,
+      this.activePlayer.board
+    );
+
+    console.log("clustercheck", clusterCheck);
+    if (isValidCoor && clusterCheck) {
       this.dragState.isValid = true;
       cellElement.appendChild(this.dragState.dragItemEl);
 
       const shipObj = this.activePlayer.board.getCorrespondingShip(
         this.dragState.dragObject
       );
+      console.log("shipOBJECT ON DROP", shipObj);
+      console.log("cluster to steSHip TO", cluster);
 
-      this.activePlayer.board.setShip(shipObj, [
-        cellElement.dataset.coordinate,
-      ]);
+      this.activePlayer.board.setShip(shipObj, cluster);
 
       // console.log("DROP SUCCESS", this.activePlayer.board.occupied);
     } else {
@@ -203,6 +241,7 @@ export default class App {
   }
 
   onShipDragging(ship) {
+    ship.classList.add("hidden");
     // console.log("Dragging", ship);
   }
 
@@ -210,6 +249,7 @@ export default class App {
   onShipDragEnd(ship) {
     console.log(this.dragState.isValid);
     ship.classList.remove("invi");
+    ship.classList.remove("hidden");
     if (!this.dragState.isValid) {
       const shipObj = this.activePlayer.board.getCorrespondingShip(
         this.dragState.dragObject
