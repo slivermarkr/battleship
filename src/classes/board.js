@@ -159,9 +159,21 @@ export class Gameboard {
       this.bufferMultiple = this.getBufferWithMoreThanOneCount();
     }
   }
+
+  isFleetAllSet() {
+    return this.shipList.every((ship) => ship.isSet);
+  }
 }
 
 // const board = new Gameboard({ name: "You", dimension: 10 });
+
+// for (const ship of board.shipList) {
+//   ship.isSet = true;
+// }
+
+// board.shipList[0].isSet = true;
+// const res = board.isFleetAllSet();
+// console.log(res);
 // board.setShip(board.shipList[0], ["A,1"]);
 // board.receiveAttack("A,1");
 // console.log(board.occupied);

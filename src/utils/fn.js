@@ -188,7 +188,7 @@ export function calculatePossibleCluster(
     result = [];
 
     console.log(isOverFlow);
-    for (let i = dimension - size; i < dimension; ++i) {
+    for (let i = dimension - size + 1; i <= dimension; ++i) {
       if (orientation == "h") {
         nextCoor = `${String.fromCharCode(coorInt[0] + 64)},${i}`;
       } else if (orientation == "v") {
@@ -204,8 +204,8 @@ export function calculatePossibleCluster(
   return result;
 }
 
-calculatePossibleCluster(
-  "A,1",
-  { size: 4, orientation: "v" },
-  { dimension: 10 }
-);
+// calculatePossibleCluster(
+//   "J,8",
+//   { size: 2, orientation: "v" },
+//   { dimension: 10 }
+// );

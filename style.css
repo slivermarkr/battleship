@@ -179,9 +179,13 @@ table {
 }
 
 .dragover {
-  border: rgb(176, 255, 4) 2px solid;
+  border: rgb(176, 255, 4) 3px solid;
 }
 
 .invi {
   z-index: -1;
+}
+
+.dragoverred {
+  border: 3px solid rgb(236, 67, 67);
 }

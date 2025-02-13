@@ -49,27 +49,12 @@ done:
 TOFIX: the isBuffer from board.js and main.js aren't in sync they tell difference isBuffer status and and bufferCount -->
 
 <!-- TODO: about the drag event -->
+<!-- TODO: -->
 
-TODO: add some UI
+<!-- - a function to be used when draggina and dropping ship with size > 1.
+- takes in the ships data and predict the next coordinates to be used -->
 
-- dialog when choosing opponent
-
-- when the game is over check who wins and dynamically change the dialog to green if user wins and red if lose.
-
-- implement draggin and dropping
-
-- add some indicator for when the coor is not valid
-
-TODO: create a better algorithm to set ship randomly
-
-- there are times that the program goes into stackoveflow
-
-TODO:
-
-- a function to be used when draggina and dropping ship with size > 1.
-- takes in the ships data and predict the next coordinates to be used
-
-- use the calcalatePossibleCluster to determine if the elements being dragover is iccupied or buffer
+<!-- - use the calcalatePossibleCluster to determine if the elements being dragover is iccupied or buffer -->
   <!-- TODO: on resetClick -->
   <!-- - reset the board.api not just the ui -->
 
@@ -78,6 +63,21 @@ TODO:
 - when big ships and drag. I can't drop on the cell next to it.
 - maybe change the ships z-index -->
 
+<!-- - implement draggin and dropping -->
+
+TODO: add some UI
+
+- dialog when choosing opponent
+
+- when the game is over check who wins and dynamically change the dialog to green if user wins and red if lose.
+
+- add some indicator for when the coor is not valid
+
+TODO: create a better algorithm to set ship randomly
+
+- there are times that the program goes into stackoveflow
+
+TODO: change ship orientation on click
 BUG #69
 
 - dragevent is fucked up, the dragState object that saves the shipObj info before i reset, doesn't always pick up. resulting in an undefined cluster variable.

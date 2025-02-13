@@ -321,17 +321,12 @@ describe("get shipObject from the board.shiplist", function () {
   });
 });
 
-describe("reset the clusters adjacentList", function () {
-  it("test for a ship with size#1", () => {
-    // const board = new Gameboard(input);
-    // const shipOne = board.shipList[0];
-    // const coor = "A,1";
-    // board.setShip(shipOne, [coor]);
-    // const clusterAdjList = isBufferCluster(getCoorAdjacentList(coor));
-    // board.resetShipClusterAdjacentList(clusterAdjList);
-    // for (let i = 0; i < clusterAdjList.length; ++i) {
-    //   const cell = board.gridMap.get(clusterAdjList[i]);
-    //   expect(cell.isBuffer).toBe(false);
-    // }
+describe("isFleetAllSet", function () {
+  it("set one ship", () => {
+    const board = new Gameboard(input);
+    const shipOne = board.shipList[0];
+    const coor = "A,1";
+    board.setShip(shipOne, [coor]);
+    expect(board.isFleetAllSet()).toBe(false);
   });
 });

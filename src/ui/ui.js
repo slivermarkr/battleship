@@ -1,10 +1,40 @@
 import { generateGridArray } from "../utils/fn.js";
 
 export default class UI {
-  static dragoverHl(coordinates, table) {
-    const tableEl = root.querySelector(`table#${table}`);
+  static showTheRightSideArenaWhenShipAllSet(root) {
+    root.querySelector(".rightSide").classList.toggle("hidden");
+    root.querySelector(".linkGrp").classList.toggle("hidden");
+    root.querySelector(".fleetSetupDiv").remove();
+  }
+
+  static removeGridHL(coordinates, hlName, table) {
+    console.log(table);
+    for (const c of coordinates) {
+      const cellElement = table.querySelector(`.grid[data-coordinate="${c}"]`);
+      cellElement.classList.remove(hlName);
+    }
+  }
+
+  static dragoverHlRed(coordinates, table) {
+    table
+      .querySelectorAll(".grid")
+      .forEach((cell) => cell.classList.remove("dragoverred"));
+
     for (let i = 0; i < coordinates.length; ++i) {
-      const gridEl = tableEl.querySelector(
+      const gridEl = table.querySelector(
+        `.grid[data-coordinate="${coordinates[i]}"]`
+      );
+      gridEl.classList.add("dragoverred");
+    }
+  }
+
+  static dragoverHl(coordinates, table) {
+    table
+      .querySelectorAll(".grid")
+      .forEach((cell) => cell.classList.remove("dragover"));
+
+    for (let i = 0; i < coordinates.length; ++i) {
+      const gridEl = table.querySelector(
         `.grid[data-coordinate="${coordinates[i]}"]`
       );
       gridEl.classList.add("dragover");
