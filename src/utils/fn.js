@@ -161,13 +161,14 @@ export function generateRandomCluster({ size }, { occupied, gridMap }) {
 export function calculatePossibleCluster(
   coor,
   { size, orientation },
-  { gridMap, dimension } = {}
+  { gridMap, dimension, occupied } = {}
 ) {
   const coorInt = convertCoorToInt(coor); // if given "A,1" return [1,1]
   let result = [];
   let nextCoor;
   let isOverFlow = false;
 
+  // console.log(gridMap.get("A,1"));
   // if h then increase the right side
   for (let i = 1; i < size; ++i) {
     if (orientation == "h") {
@@ -175,6 +176,8 @@ export function calculatePossibleCluster(
     } else if (orientation == "v") {
       nextCoor = `${String.fromCharCode(coorInt[0] + i + 64)},${coorInt[1]}`;
     }
+    const cell = gridMap.get(nextCoor);
+    console.log(cell);
     if (isValidCoor(nextCoor)) {
       result.push(nextCoor);
     } else {

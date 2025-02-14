@@ -56,374 +56,380 @@ export default class App {
     // randomly append ship
     this.appendShipElementToGridEl();
     // this.showOccupiedGrid(this.playerOne);
-    this.onClickListener();
-    this.shipDragEventListener(this.playerOne);
-    this.gridDragDropEventListener();
-    this.setBufferClasslist(this.activePlayer.board);
+    // this.onClickListener();
+    // this.shipDragEventListener(this.playerOne);
+    // this.gridDragDropEventListener();
+    // this.setBufferClasslist(this.activePlayer.board);
   }
 
-  checkForCollisionOnChangeOrientation(shipEl) {
-    const shipObj = this.activePlayer.board.getCorrespondingShip({
-      size: shipEl.dataset.size,
-      index: shipEl.dataset.index,
-    });
+  // checkForCollisionOnChangeOrientation(shipEl) {
+  //   const shipObj = this.activePlayer.board.getCorrespondingShip({
+  //     size: shipEl.dataset.size,
+  //     index: shipEl.dataset.index,
+  //   });
 
-    const orientation = shipEl.dataset.orientation;
+  //   const orientation = shipEl.dataset.orientation;
 
-    let newOrientation;
-    let result;
-    // reset the shipObj cluster
-    console.log("before", shipObj);
+  //   let newOrientation;
+  //   let result;
+  //   // reset the shipObj cluster
+  //   console.log("before", shipObj);
 
-    // this.resetTheShipClusterForAppending(shipObj);
+  //   this.resetTheShipClusterForAppending(shipObj);
 
-    console.log("after", shipObj);
-    if (orientation == "h") {
-      newOrientation = "v";
-      result = calculatePossibleCluster(
-        shipObj.cluster[0],
-        { size: shipObj.size, orientation: "v" },
-        this.activePlayer.board
-      );
-    } else if (orientation == "v") {
-      newOrientation = "h";
-      result = calculatePossibleCluster(
-        shipObj.cluster[0],
-        { size: shipObj.size, orientation: "h" },
-        this.activePlayer.board
-      );
-    }
+  //   console.log("after", shipObj);
+  //   if (orientation == "h") {
+  //     newOrientation = "v";
+  //     result = calculatePossibleCluster(
+  //       shipObj.cluster[0],
+  //       { size: shipObj.size, orientation: "v" },
+  //       this.activePlayer.board
+  //     );
+  //   } else if (orientation == "v") {
+  //     newOrientation = "h";
+  //     result = calculatePossibleCluster(
+  //       shipObj.cluster[0],
+  //       { size: shipObj.size, orientation: "h" },
+  //       this.activePlayer.board
+  //     );
+  //   }
 
-    return {
-      isValid: this.checkIfClusterIsValid(result),
-      newOrientation,
-      newCluster: result,
-    };
-  }
-  //#orientation
-  onClickListener() {
-    const arena = this.root.querySelector("#arena");
-    arena.addEventListener("click", (e) => {
-      if (e.target.classList.contains("ship")) {
-        if (this.controller.isReady) return;
-        const shipEl = e.target;
-        const shipObj = this.activePlayer.board.getCorrespondingShip({
-          size: shipEl.dataset.size,
-          index: shipEl.dataset.index,
-        });
+  //   // console.log("RESULT", result);
+  //   // for (const coor of result) {
+  //   //   const cell = this.activePlayer.board.gridMap.get(coor);
+  //   //   const cellAdj = getCoorAdjacentCorner(coor);
+  //   //   for (const coorAdj of cellAdj) {
+  //   //     const buffadj = this.activePlayer.board.gridMap.get(coorAdj);
+  //   //     console.log("each of results", coorAdj, buffadj);
+  //   //   }
+  //   // }
+  //   return {
+  //     isValid: this.checkIfClusterIsValid(result),
+  //     newOrientation,
+  //     newCluster: result,
+  //   };
+  // }
+  // //#orientation
+  // onClickListener() {
+  //   const arena = this.root.querySelector("#arena");
+  //   arena.addEventListener("click", (e) => {
+  //     if (e.target.classList.contains("ship")) {
+  //       if (this.controller.isReady) return;
+  //       const shipEl = e.target;
+  //       const shipObj = this.activePlayer.board.getCorrespondingShip({
+  //         size: shipEl.dataset.size,
+  //         index: shipEl.dataset.index,
+  //       });
 
-        if (
-          shipEl.dataset.captain !== this.activePlayer.name &&
-          shipEl.parentElement.classList.contains("fleetSetupDiv")
-        )
-          return;
+  //       if (
+  //         shipEl.dataset.captain !== this.activePlayer.name &&
+  //         shipEl.parentElement.classList.contains("fleetSetupDiv")
+  //       )
+  //         return;
 
-        const changeOrientationResult =
-          this.checkForCollisionOnChangeOrientation(shipEl);
-        //isValidChangeOrientation
-        console.log(changeOrientationResult.isValid);
-        if (changeOrientationResult.isValid) {
-          const table = this.root.querySelector(
-            `table#${this.activePlayer.name}`
-          );
-          shipObj.reset();
-          shipObj.orientation = changeOrientationResult.newOrientation;
+  //       const changeOrientationResult =
+  //         this.checkForCollisionOnChangeOrientation(shipEl);
+  //       //isValidChangeOrientation
+  //       console.log(changeOrientationResult.isValid);
+  //       if (changeOrientationResult.isValid) {
+  //         const table = this.root.querySelector(
+  //           `table#${this.activePlayer.name}`
+  //         );
+  //         shipObj.reset();
+  //         shipObj.orientation = changeOrientationResult.newOrientation;
 
-          this.activePlayer.board.setShip(
-            shipObj,
-            changeOrientationResult.newCluster
-          );
+  //         this.activePlayer.board.setShip(
+  //           shipObj,
+  //           changeOrientationResult.newCluster
+  //         );
 
-          table
-            .querySelector(
-              `.grid[data-coordinate='${changeOrientationResult.newCluster[0]}']`
-            )
-            .appendChild(shipEl);
-          UI.changeShipOrientation(shipEl);
-          UI.updateInfor(this.root, "Ship rotated.");
-          UI.removeGridHL(
-            generateGridArray(10),
-            "buffer",
-            this.root.querySelector(`table#${this.playerOne.name}`)
-          );
+  //         table
+  //           .querySelector(
+  //             `.grid[data-coordinate='${changeOrientationResult.newCluster[0]}']`
+  //           )
+  //           .appendChild(shipEl);
+  //         UI.changeShipOrientation(shipEl);
+  //         UI.updateInfor(this.root, "Ship rotated.");
+  //         UI.removeGridHL(
+  //           generateGridArray(10),
+  //           "buffer",
+  //           this.root.querySelector(`table#${this.playerOne.name}`)
+  //         );
 
-          this.setBufferClasslist(this.activePlayer.board);
-        } else {
-          console.log("COLLISION");
-        }
-      }
-    });
-  }
+  //         this.setBufferClasslist(this.activePlayer.board);
+  //       } else {
+  //         console.log("COLLISION");
+  //       }
+  //     }
+  //   });
+  // }
 
-  gridDragEnter(gridEl) {
-    const isValid = isCellClearForOccupation(
-      gridEl.dataset.coordinate,
-      this.activePlayer.board
-    );
-    if (gridEl.closest("table").id !== this.activePlayer.name || !isValid) {
-      return;
-    }
-  }
+  // gridDragEnter(gridEl) {
+  //   const isValid = isCellClearForOccupation(
+  //     gridEl.dataset.coordinate,
+  //     this.activePlayer.board
+  //   );
+  //   if (gridEl.closest("table").id !== this.activePlayer.name || !isValid) {
+  //     return;
+  //   }
+  // }
 
-  gridDragover(e) {
-    e.preventDefault();
+  // gridDragover(e) {
+  //   e.preventDefault();
 
-    if (e.target.closest("table").id !== this.activePlayer.name) return;
-    // e.target.classList.add("dragover");
+  //   if (e.target.closest("table").id !== this.activePlayer.name) return;
+  //   // e.target.classList.add("dragover");
 
-    const table = e.target.closest("table");
-    const cellObj = this.activePlayer.board.gridMap.get(
-      e.target.dataset.coordinate
-    );
+  //   const table = e.target.closest("table");
+  //   const cellObj = this.activePlayer.board.gridMap.get(
+  //     e.target.dataset.coordinate
+  //   );
 
-    const res = calculatePossibleCluster(
-      e.target.dataset.coordinate,
-      {
-        size: this.dragState.dragItemEl.dataset.size,
-        orientation: this.dragState.dragItemEl.dataset.orientation,
-      },
-      this.activePlayer.board
-    );
-    const checkCluster = this.checkIfClusterIsValid(res);
-    if (checkCluster) {
-      UI.dragoverHl(res, table);
-    } else {
-      UI.dragoverHlRed(res, table);
-      UI.updateInfor(this.root, "can't place ship in a buffer");
-    }
-  }
+  //   const res = calculatePossibleCluster(
+  //     e.target.dataset.coordinate,
+  //     {
+  //       size: this.dragState.dragItemEl.dataset.size,
+  //       orientation: this.dragState.dragItemEl.dataset.orientation,
+  //     },
+  //     this.activePlayer.board
+  //   );
+  //   const checkCluster = this.checkIfClusterIsValid(res);
+  //   if (checkCluster) {
+  //     UI.dragoverHl(res, table);
+  //   } else {
+  //     UI.dragoverHlRed(res, table);
+  //     UI.updateInfor(this.root, "can't place ship in a buffer");
+  //   }
+  // }
 
-  gridDragLeave(e) {
-    const table = e.target.closest("table");
+  // gridDragLeave(e) {
+  //   const table = e.target.closest("table");
 
-    const res = calculatePossibleCluster(
-      e.target.dataset.coordinate,
-      {
-        size: this.dragState.dragItemEl.dataset.size,
-        orientation: this.dragState.dragItemEl.dataset.orientation,
-      },
-      this.activePlayer.board
-    );
+  //   const res = calculatePossibleCluster(
+  //     e.target.dataset.coordinate,
+  //     {
+  //       size: this.dragState.dragItemEl.dataset.size,
+  //       orientation: this.dragState.dragItemEl.dataset.orientation,
+  //     },
+  //     this.activePlayer.board
+  //   );
 
-    UI.removeGridHL(res, "dragover", table);
-    UI.removeGridHL(res, "dragoverred", table);
-  }
+  //   UI.removeGridHL(res, "dragover", table);
+  //   UI.removeGridHL(res, "dragoverred", table);
+  // }
 
-  checkIfClusterIsValid(cluster) {
-    let isCellValid = true;
-    for (let i = 0; i < cluster.length; ++i) {
-      if (isCellClearForOccupation(cluster[i], this.activePlayer.board)) {
-        isCellValid = true;
-      } else {
-        return false;
-      }
-    }
+  // checkIfClusterIsValid(cluster) {
+  //   let isCellValid = true;
+  //   for (let i = 0; i < cluster.length; ++i) {
+  //     if (isCellClearForOccupation(cluster[i], this.activePlayer.board)) {
+  //       isCellValid = true;
+  //     } else {
+  //       return false;
+  //     }
+  //   }
 
-    return isCellValid;
-    // return cluster.some(cell => isCellClearForOccupation(cell))
-  }
+  //   return isCellValid;
+  //   // return cluster.some(cell => isCellClearForOccupation(cell))
+  // }
 
-  //#dropevent
-  gridDrop(e) {
-    e.target.classList.remove("dragover");
-    const table = e.target.closest("table");
+  // //#dropevent
+  // gridDrop(e) {
+  //   e.target.classList.remove("dragover");
+  //   const table = e.target.closest("table");
 
-    // i added this for when the drop target is undefined since the ship.object is resetted when dragStart I want to load the save cluster back to i can append/set to the previous cluster
-    // i don't know if it's actually working lol
-    if (table.id !== this.dragState.dragItemEl.dataset.captain) {
-      this.dragState.isValid = false;
-      this.dragState.dragObject.cluster =
-        this.dragState.dragItemPreviousCluster;
-      return;
-    }
+  //   // i added this for when the drop target is undefined since the ship.object is resetted when dragStart I want to load the save cluster back to i can append/set to the previous cluster
+  //   // i don't know if it's actually working lol
+  //   if (table.id !== this.dragState.dragItemEl.dataset.captain) {
+  //     this.dragState.isValid = false;
+  //     this.dragState.dragObject.cluster =
+  //       this.dragState.dragItemPreviousCluster;
+  //     return;
+  //   }
 
-    const cellElement = e.target;
-    const isValidCoor = isCellClearForOccupation(
-      cellElement.dataset.coordinate,
-      this.activePlayer.board
-    );
+  //   const cellElement = e.target;
+  //   const isValidCoor = isCellClearForOccupation(
+  //     cellElement.dataset.coordinate,
+  //     this.activePlayer.board
+  //   );
 
-    const cluster = calculatePossibleCluster(
-      e.target.dataset.coordinate,
-      {
-        orientation: this.dragState.dragItemEl.dataset.orientation,
-        size: this.dragState.dragItemEl.dataset.size,
-      },
-      this.activePlayer.board
-    );
+  //   const cluster = calculatePossibleCluster(
+  //     e.target.dataset.coordinate,
+  //     {
+  //       orientation: this.dragState.dragItemEl.dataset.orientation,
+  //       size: this.dragState.dragItemEl.dataset.size,
+  //     },
+  //     this.activePlayer.board
+  //   );
 
-    const clusterCheck = this.checkIfClusterIsValid(
-      cluster,
-      this.activePlayer.board
-    );
+  //   const clusterCheck = this.checkIfClusterIsValid(
+  //     cluster,
+  //     this.activePlayer.board
+  //   );
 
-    UI.removeGridHL(cluster, "dragover", table);
-    UI.removeGridHL(cluster, "dragoverred", table);
-    if (isValidCoor && clusterCheck) {
-      this.dragState.isValid = true;
+  //   UI.removeGridHL(cluster, "dragover", table);
+  //   UI.removeGridHL(cluster, "dragoverred", table);
+  //   if (isValidCoor && clusterCheck) {
+  //     this.dragState.isValid = true;
 
-      // cellElement.appendChild(this.dragState.dragItemEl);
-      // appencd the ship the the first index of the cluster
+  //     // cellElement.appendChild(this.dragState.dragItemEl);
+  //     // appencd the ship the the first index of the cluster
 
-      table
-        .querySelector(`.grid[data-coordinate="${cluster[0]}"]`)
-        .appendChild(this.dragState.dragItemEl);
+  //     table
+  //       .querySelector(`.grid[data-coordinate="${cluster[0]}"]`)
+  //       .appendChild(this.dragState.dragItemEl);
 
-      const shipObj = this.activePlayer.board.getCorrespondingShip(
-        this.dragState.dragObject
-      );
+  //     const shipObj = this.activePlayer.board.getCorrespondingShip(
+  //       this.dragState.dragObject
+  //     );
 
-      if (this.checkIfClusterIsValid(cluster)) {
-        this.activePlayer.board.setShip(shipObj, cluster);
-        UI.updateInfor(this.root, "Ship Placed Succesfully.");
+  //     if (this.checkIfClusterIsValid(cluster)) {
+  //       this.activePlayer.board.setShip(shipObj, cluster);
+  //       UI.updateInfor(this.root, "Ship Placed Succesfully.");
 
-        // #buffer Add on drop
-        UI.removeGridHL(
-          generateGridArray(10),
-          "buffer",
-          this.root.querySelector(`table#${this.playerOne.name}`)
-        );
+  //       // #buffer Add on drop
+  //       UI.removeGridHL(
+  //         generateGridArray(10),
+  //         "buffer",
+  //         this.root.querySelector(`table#${this.playerOne.name}`)
+  //       );
 
-        this.setBufferClasslist(this.activePlayer.board);
-      } else {
-        console.warn("INVALID CLUSTER", cluster);
-      }
-    } else {
-      this.dragState.isValid = false;
-      this.dragState.dragObject.cluster =
-        this.dragState.dragItemPreviousCluster;
-    }
-  }
+  //       this.setBufferClasslist(this.activePlayer.board);
+  //     } else {
+  //       console.warn("INVALID CLUSTER", cluster);
+  //     }
+  //   } else {
+  //     this.dragState.isValid = false;
+  //     this.dragState.dragObject.cluster =
+  //       this.dragState.dragItemPreviousCluster;
+  //   }
+  // }
 
-  gridDragDropEventListener() {
-    const arena = this.root.querySelector("#arena");
-    arena.addEventListener("drop", (e) => {
-      if (e.target.classList.contains("grid")) {
-        this.gridDrop(e);
-      } else {
-        this.dragState.isValid = false;
-      }
-      if (
-        this.controller.isResetMode &&
-        this.activePlayer.board.isFleetAllSet()
-      ) {
-        UI.showTheRightSideArenaWhenShipAllSet(this.root);
-        this.controller.isResetMode = false;
-      }
-    });
+  // gridDragDropEventListener() {
+  //   const arena = this.root.querySelector("#arena");
+  //   arena.addEventListener("drop", (e) => {
+  //     if (e.target.classList.contains("grid")) {
+  //       this.gridDrop(e);
+  //     } else {
+  //       this.dragState.isValid = false;
+  //     }
+  //     if (
+  //       this.controller.isResetMode &&
+  //       this.activePlayer.board.isFleetAllSet()
+  //     ) {
+  //       UI.showTheRightSideArenaWhenShipAllSet(this.root);
+  //       this.controller.isResetMode = false;
+  //     }
+  //   });
 
-    arena.addEventListener("dragleave", (e) => {
-      if (e.target.classList.contains("grid")) {
-        this.gridDragLeave(e);
-      } else {
-        this.dragState.isValid = false;
-      }
-    });
+  //   arena.addEventListener("dragleave", (e) => {
+  //     if (e.target.classList.contains("grid")) {
+  //       this.gridDragLeave(e);
+  //     } else {
+  //       this.dragState.isValid = false;
+  //     }
+  //   });
 
-    arena.addEventListener("dragover", (e) => {
-      if (e.target.classList.contains("grid")) {
-        this.gridDragover(e);
-      }
-    });
+  //   arena.addEventListener("dragover", (e) => {
+  //     if (e.target.classList.contains("grid")) {
+  //       this.gridDragover(e);
+  //     }
+  //   });
 
-    arena.addEventListener("dragenter", (e) => {
-      if (e.target.classList.contains("grid")) {
-        this.gridDragEnter(e.target);
-      }
-    });
-  }
+  //   arena.addEventListener("dragenter", (e) => {
+  //     if (e.target.classList.contains("grid")) {
+  //       this.gridDragEnter(e.target);
+  //     }
+  //   });
+  // }
 
-  // #reset the cluster
-  resetTheShipClusterForAppending(shipObj) {
-    // const table = this.root.querySelector(`table#${this.activePlayer.name}`);
-    const cluster = shipObj.cluster || this.dragState.dragObject.cluster;
+  // // #reset the cluster
+  // resetTheShipClusterForAppending(shipObj) {
+  //   // const table = this.root.querySelector(`table#${this.activePlayer.name}`);
+  //   const cluster = shipObj.cluster || this.dragState.dragObject.cluster;
 
-    // this LOOP only reset the CLUSTER
-    for (let i = 0; i < cluster.length; ++i) {
-      const cell = this.activePlayer.board.gridMap.get(cluster[i]);
+  //   // this LOOP only reset the CLUSTER
+  //   for (let i = 0; i < cluster.length; ++i) {
+  //     const cell = this.activePlayer.board.gridMap.get(cluster[i]);
 
-      cell.reset();
-      this.activePlayer.board.occupied =
-        this.activePlayer.board.getOccupiedCells();
-    }
-    // this resets the buffer hopefully? maybe
-    if (shipObj.cluster) {
-      this.activePlayer.board.resetShipClusterAdjacentList(
-        isBufferCluster(cluster)
-      );
-    } else {
-    }
-    // for (const i of isBufferCluster(cluster)) {
-    //   const cell = this.activePlayer.board.gridMap.get(i);
-    // }
-  }
+  //     cell.reset();
+  //     this.activePlayer.board.occupied =
+  //       this.activePlayer.board.getOccupiedCells();
+  //   }
+  //   // this resets the buffer hopefully? maybe
+  //   if (shipObj.cluster) {
+  //     this.activePlayer.board.resetShipClusterAdjacentList(
+  //       isBufferCluster(cluster),
+  //       cluster[0]
+  //     );
+  //   }
+  // }
 
-  onShipDragStart(ship, activePlayer) {
-    // this.dragState.isValid = true;
-    if (ship.dataset.captain !== this.activePlayer.name) return;
+  // onShipDragStart(ship, activePlayer) {
+  //   // this.dragState.isValid = true;
+  //   if (ship.dataset.captain !== this.activePlayer.name) return;
 
-    ship.classList.add("invi");
-    const shipObj = activePlayer.board.getCorrespondingShip({
-      size: ship.dataset.size,
-      index: ship.dataset.index,
-    });
+  //   ship.classList.add("invi");
+  //   const shipObj = activePlayer.board.getCorrespondingShip({
+  //     size: ship.dataset.size,
+  //     index: ship.dataset.index,
+  //   });
 
-    this.dragState.dragObject = shipObj;
-    this.dragState.dragItemEl = ship;
-    if (!this.controller.isResetMode && shipObj.cluster !== undefined) {
-      this.dragState.dragItemPreviousCluster = shipObj.cluster;
-    }
-    this.resetTheShipClusterForAppending(shipObj);
-    shipObj.reset();
-  }
+  //   this.dragState.dragObject = shipObj;
+  //   this.dragState.dragItemEl = ship;
+  //   if (!this.controller.isResetMode && shipObj.cluster !== undefined) {
+  //     this.dragState.dragItemPreviousCluster = shipObj.cluster;
+  //   }
+  //   this.resetTheShipClusterForAppending(shipObj);
+  //   shipObj.reset();
+  // }
 
-  onShipDragging(ship) {
-    const shipObj = this.activePlayer.board.getCorrespondingShip({
-      size: ship.dataset.size,
-      index: ship.dataset.index,
-    });
-  }
+  // onShipDragging(ship) {
+  //   const shipObj = this.activePlayer.board.getCorrespondingShip({
+  //     size: ship.dataset.size,
+  //     index: ship.dataset.index,
+  //   });
+  // }
 
-  //#drageend
-  onShipDragEnd(ship) {
-    ship.classList.remove("invi");
-    ship.classList.remove("hidden");
-    if (!this.dragState.isValid) {
-      const shipObj = this.activePlayer.board.getCorrespondingShip(
-        this.dragState.dragObject
-      );
-      this.activePlayer.board.setShip(
-        shipObj,
-        this.dragState.dragItemPreviousCluster
-      );
-    }
-  }
+  // //#drageend
+  // onShipDragEnd(ship) {
+  //   ship.classList.remove("invi");
+  //   ship.classList.remove("hidden");
+  //   if (!this.dragState.isValid) {
+  //     const shipObj = this.activePlayer.board.getCorrespondingShip(
+  //       this.dragState.dragObject
+  //     );
+  //     this.activePlayer.board.setShip(
+  //       shipObj,
+  //       this.dragState.dragItemPreviousCluster
+  //     );
+  //   }
+  // }
 
-  #shipDrag;
-  shipDragEventListener(player) {
-    const arena = this.root.querySelector("#arena");
-    arena.addEventListener("dragstart", (e) => {
-      if (this.controller.isReady) {
-        e.preventDefault();
-        return;
-      }
-      if (e.target.classList.contains("ship")) {
-        this.onShipDragStart(e.target, player);
-      }
-    });
+  // #shipDrag;
+  // shipDragEventListener(player) {
+  //   const arena = this.root.querySelector("#arena");
+  //   arena.addEventListener("dragstart", (e) => {
+  //     if (this.controller.isReady) {
+  //       e.preventDefault();
+  //       return;
+  //     }
+  //     if (e.target.classList.contains("ship")) {
+  //       this.onShipDragStart(e.target, player);
+  //     }
+  //   });
 
-    arena.addEventListener("drag", (e) => {
-      if (e.target.classList.contains("ship")) {
-        this.onShipDragging(e.target);
-      }
-    });
+  //   arena.addEventListener("drag", (e) => {
+  //     if (e.target.classList.contains("ship")) {
+  //       this.onShipDragging(e.target);
+  //     }
+  //   });
 
-    arena.addEventListener("dragend", (e) => {
-      if (e.target.classList.contains("ship")) {
-        this.onShipDragEnd(e.target);
-      }
-    });
-  }
+  //   arena.addEventListener("dragend", (e) => {
+  //     if (e.target.classList.contains("ship")) {
+  //       this.onShipDragEnd(e.target);
+  //     }
+  //   });
+  // }
 
   // this only applies on playerOne not computerAI
   appendShipElementToGridEl() {
@@ -486,6 +492,16 @@ export default class App {
     const coordinateBuffer = isBufferCluster(ship.cluster);
     UI.showBuffer(coordinateBuffer, table);
     UI.shipSunk(ship.cluster, table);
+    if (
+      table.querySelector(
+        `.ship[data-index="${ship.index}"][data-size="${ship.size}"]`
+      )
+    ) {
+      const shipElement = table.querySelector(
+        `.ship[data-index="${ship.index}"][data-size="${ship.size}"]`
+      );
+      shipElement.remove();
+    }
     return coordinateBuffer;
   }
 
@@ -640,8 +656,8 @@ export default class App {
   onReadyClick() {
     this.playerTwo.setShipRandomly();
     // this.showOccupiedGrid(this.playerOne);
-    this.showOccupiedGrid(this.playerTwo);
-    this.setBufferClasslist(this.playerTwo.board);
+    // this.showOccupiedGrid(this.playerTwo);
+    // this.setBufferClasslist(this.playerTwo.board);
     if (
       !this.isFleetReady(this.playerOne.board.shipList) ||
       !this.isFleetReady(this.playerTwo.board.shipList)

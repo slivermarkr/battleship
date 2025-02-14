@@ -79,17 +79,11 @@ TODO: create a better algorithm to set ship randomly
 
 - there are times that the program goes into stackoveflow
 
-BUG #69
+# TODO: UI
 
-- dragevent is fucked up, the dragState object that saves the shipObj info before i reset, doesn't always pick up. resulting in an undefined cluster variable.
+- when ship is sunk remove the ship element
+- also on actual gameplay it might help to lower the opacity of the attackers board to help indicate who is whos board to attack.
 
-BUG #420
-
-- when a ship is rotated the buffer is lost
-
-TODO:
-
-- gameplay with ships
 <!-- - remove the ship z-index so grids are clickable
 - add some style depending wether it's a hit or a miss -->
 
@@ -100,6 +94,8 @@ TODO:
 - make algorithm that allows computer to pick adjacent cell if it hits a ship.
 
 # this shit is major problem
+
+## just refactor the whole drag, drop and change orientation thing
 
 - the the game is over and rematch button is click the dragevents aren't doing it's thing.
 
@@ -117,3 +113,8 @@ TODO:
 - also the changeOrientation onClick function is not working after one game
 
 - consider to just overhaul the resetfuntion
+
+# BUG on changeOrientation
+
+- maybe create a separate checkMethod onClick
+- when you click on a ship and it's possibleCluster if a buffer. it decrements the bufferCount so when the ship is clicked multiple times is sees the cell as valid.
