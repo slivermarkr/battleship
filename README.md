@@ -99,10 +99,21 @@ TODO:
 
 - make algorithm that allows computer to pick adjacent cell if it hits a ship.
 
-TODO:
+# this shit is major problem
 
 - the the game is over and rematch button is click the dragevents aren't doing it's thing.
 
 - when the ship is sunk remove the ship
 
 - the computer random attacks slow the pc down for some reason
+
+- 02-14
+- attemp#1
+- it seems like when the after round the listener is not doing it's supposed to do. at some part doesn't
+- it's not resetting the cluster for appending
+
+- it's seems like the reset is actualy not working after one game
+
+- also the changeOrientation onClick function is not working after one game
+
+- consider to just overhaul the resetfuntion

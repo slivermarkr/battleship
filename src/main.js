@@ -1,6 +1,7 @@
 import { Player, Computer } from "./classes/player.js";
 import {
   calculatePossibleCluster,
+  generateGridArray,
   getCoorAdjacentCorner,
   getCoorAdjacentList,
   isBufferCluster,
@@ -49,20 +50,16 @@ export default class App {
     this.controller.comboCount = false;
     this.controller.isGameOver = false;
 
-    this.dragState.isValid = true;
-    this.dragState.dragItemEl = undefined;
-    this.dragState.dragObject = undefined;
-    this.dragState.dragItemPreviousCluster = undefined;
-
     this.playerTwo = new Computer({});
     this.playerTwo.board.reset();
     this.displayArena();
     // randomly append ship
     this.appendShipElementToGridEl();
     // this.showOccupiedGrid(this.playerOne);
+    this.onClickListener();
     this.shipDragEventListener(this.playerOne);
     this.gridDragDropEventListener();
-    this.onClickListener();
+    this.setBufferClasslist(this.activePlayer.board);
   }
 
   checkForCollisionOnChangeOrientation(shipEl) {
@@ -76,8 +73,11 @@ export default class App {
     let newOrientation;
     let result;
     // reset the shipObj cluster
-    this.resetTheShipClusterForAppending(shipObj);
+    console.log("before", shipObj);
 
+    // this.resetTheShipClusterForAppending(shipObj);
+
+    console.log("after", shipObj);
     if (orientation == "h") {
       newOrientation = "v";
       result = calculatePossibleCluster(
@@ -100,7 +100,7 @@ export default class App {
       newCluster: result,
     };
   }
-
+  //#orientation
   onClickListener() {
     const arena = this.root.querySelector("#arena");
     arena.addEventListener("click", (e) => {
@@ -121,12 +121,14 @@ export default class App {
         const changeOrientationResult =
           this.checkForCollisionOnChangeOrientation(shipEl);
         //isValidChangeOrientation
+        console.log(changeOrientationResult.isValid);
         if (changeOrientationResult.isValid) {
           const table = this.root.querySelector(
             `table#${this.activePlayer.name}`
           );
           shipObj.reset();
           shipObj.orientation = changeOrientationResult.newOrientation;
+
           this.activePlayer.board.setShip(
             shipObj,
             changeOrientationResult.newCluster
@@ -139,7 +141,13 @@ export default class App {
             .appendChild(shipEl);
           UI.changeShipOrientation(shipEl);
           UI.updateInfor(this.root, "Ship rotated.");
-          // console.log(this.activePlayer.board.occupied);
+          UI.removeGridHL(
+            generateGridArray(10),
+            "buffer",
+            this.root.querySelector(`table#${this.playerOne.name}`)
+          );
+
+          this.setBufferClasslist(this.activePlayer.board);
         } else {
           console.log("COLLISION");
         }
@@ -164,6 +172,9 @@ export default class App {
     // e.target.classList.add("dragover");
 
     const table = e.target.closest("table");
+    const cellObj = this.activePlayer.board.gridMap.get(
+      e.target.dataset.coordinate
+    );
 
     const res = calculatePossibleCluster(
       e.target.dataset.coordinate,
@@ -250,6 +261,7 @@ export default class App {
     UI.removeGridHL(cluster, "dragoverred", table);
     if (isValidCoor && clusterCheck) {
       this.dragState.isValid = true;
+
       // cellElement.appendChild(this.dragState.dragItemEl);
       // appencd the ship the the first index of the cluster
 
@@ -261,8 +273,21 @@ export default class App {
         this.dragState.dragObject
       );
 
-      this.activePlayer.board.setShip(shipObj, cluster);
-      UI.updateInfor(this.root, "Ship Placed Succesfully.");
+      if (this.checkIfClusterIsValid(cluster)) {
+        this.activePlayer.board.setShip(shipObj, cluster);
+        UI.updateInfor(this.root, "Ship Placed Succesfully.");
+
+        // #buffer Add on drop
+        UI.removeGridHL(
+          generateGridArray(10),
+          "buffer",
+          this.root.querySelector(`table#${this.playerOne.name}`)
+        );
+
+        this.setBufferClasslist(this.activePlayer.board);
+      } else {
+        console.warn("INVALID CLUSTER", cluster);
+      }
     } else {
       this.dragState.isValid = false;
       this.dragState.dragObject.cluster =
@@ -277,6 +302,13 @@ export default class App {
         this.gridDrop(e);
       } else {
         this.dragState.isValid = false;
+      }
+      if (
+        this.controller.isResetMode &&
+        this.activePlayer.board.isFleetAllSet()
+      ) {
+        UI.showTheRightSideArenaWhenShipAllSet(this.root);
+        this.controller.isResetMode = false;
       }
     });
 
@@ -315,10 +347,12 @@ export default class App {
         this.activePlayer.board.getOccupiedCells();
     }
     // this resets the buffer hopefully? maybe
-    this.activePlayer.board.resetShipClusterAdjacentList(
-      isBufferCluster(cluster)
-    );
-
+    if (shipObj.cluster) {
+      this.activePlayer.board.resetShipClusterAdjacentList(
+        isBufferCluster(cluster)
+      );
+    } else {
+    }
     // for (const i of isBufferCluster(cluster)) {
     //   const cell = this.activePlayer.board.gridMap.get(i);
     // }
@@ -333,24 +367,28 @@ export default class App {
       size: ship.dataset.size,
       index: ship.dataset.index,
     });
-    console.log("Board status", this.activePlayer);
-    console.log("draggin this bitch", shipObj);
+
     this.dragState.dragObject = shipObj;
     this.dragState.dragItemEl = ship;
-    this.dragState.dragItemPreviousCluster = shipObj.cluster;
+    if (!this.controller.isResetMode && shipObj.cluster !== undefined) {
+      this.dragState.dragItemPreviousCluster = shipObj.cluster;
+    }
     this.resetTheShipClusterForAppending(shipObj);
-
     shipObj.reset();
   }
 
-  onShipDragging(ship) {}
+  onShipDragging(ship) {
+    const shipObj = this.activePlayer.board.getCorrespondingShip({
+      size: ship.dataset.size,
+      index: ship.dataset.index,
+    });
+  }
 
   //#drageend
   onShipDragEnd(ship) {
     ship.classList.remove("invi");
     ship.classList.remove("hidden");
     if (!this.dragState.isValid) {
-      console.log("353 onshipDragend");
       const shipObj = this.activePlayer.board.getCorrespondingShip(
         this.dragState.dragObject
       );
@@ -383,14 +421,6 @@ export default class App {
     arena.addEventListener("dragend", (e) => {
       if (e.target.classList.contains("ship")) {
         this.onShipDragEnd(e.target);
-
-        if (
-          this.controller.isResetMode &&
-          this.activePlayer.board.isFleetAllSet()
-        ) {
-          UI.showTheRightSideArenaWhenShipAllSet(this.root);
-          this.controller.isResetMode = false;
-        }
       }
     });
   }
@@ -461,7 +491,6 @@ export default class App {
 
   //#attack
   attack(coor, playerToBeAttacked, table) {
-    // console.log("HIT here", coor);
     const cell = playerToBeAttacked.board.gridMap.get(coor);
     if (cell.isAttacked && this.controller.isGameOver) return;
 
@@ -492,6 +521,7 @@ export default class App {
       if (this.activePlayer instanceof Computer) {
         this.activePlayer.removeSunkenCluster(clusterOfSunkenShip);
       }
+
       // check if the playerTobeAttacked.fleetisDefeated
       this.checkForWin(
         playerToBeAttacked.board.isFleetDefeated(),
@@ -542,12 +572,14 @@ export default class App {
   onResetClick() {
     if (this.controller.isResetMode) return;
     //prevents multiple fleetBox creation
+    this.controller.isReady = false;
     this.controller.isResetMode = true;
 
     //clears the default fleet position and renders a clean arena
     this.playerOne.board.reset();
-    console.log("RESET", this.playerOne.board);
-    // this.showOccupiedGrid(this.activePlayer);
+    if (this.playerTwo instanceof Computer) {
+      this.activePlayer = this.playerOne;
+    }
 
     const arena = this.root.querySelector("#arena");
 
@@ -559,6 +591,16 @@ export default class App {
 
     // this.showOccupiedGrid(this.activePlayer);
     UI.updateInfor(this.root, `Setting ship...`);
+    UI.removeGridHL(
+      generateGridArray(10),
+      "buffer",
+      this.root.querySelector(`table#${this.playerOne.name}`)
+    );
+    UI.removeGridHL(
+      generateGridArray(10),
+      "occupied",
+      this.root.querySelector(`table#${this.playerOne.name}`)
+    );
 
     this.root.querySelector(".rightSide").classList.add("hidden");
     this.root.querySelector(".linkGrp").classList.add("hidden");
@@ -567,10 +609,16 @@ export default class App {
     lArena.querySelectorAll(".ship").forEach((shipEl) => shipEl.remove());
 
     arena.insertBefore(fleetBox, lArena);
+    // this.shipDragEventListener(this.activePlayer);
+    // this.gridDragDropEventListener();
   }
 
   setBufferClasslist({ shipList, name }) {
+    const table = this.root.querySelector(`table#${name}`);
+    UI.removeGridHL(generateGridArray(10), "buffer", table);
+
     for (let i = 0; i < shipList.length; ++i) {
+      if (!shipList[i].cluster) continue;
       UI.bufferGridHl(this.root, isBufferCluster(shipList[i].cluster), name);
     }
   }
@@ -611,6 +659,10 @@ export default class App {
         element.classList.toggle("hidden");
       });
 
+      this.dragState.isValid = true;
+      this.dragState.dragItemEl = undefined;
+      this.dragState.dragObject = undefined;
+      this.dragState.dragItemPreviousCluster = undefined;
       // UI.isReadyForBatlle(this.root);
     }
   }

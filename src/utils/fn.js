@@ -200,7 +200,7 @@ export function calculatePossibleCluster(
   } else {
     result.unshift(coor);
   }
-  console.log(result);
+  // console.log(result);
   return result;
 }
 
@@ -209,5 +209,3 @@ export function calculatePossibleCluster(
 //   { size: 2, orientation: "v" },
 //   { dimension: 10 }
 // );
-
-console.log(generateGridArray(10));

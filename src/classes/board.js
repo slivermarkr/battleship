@@ -106,9 +106,9 @@ export class Gameboard {
   }
 
   reset() {
-    this.occupied.length = 0;
-    this.hitMap.miss.length = 0;
-    this.hitMap.hit.length = 0;
+    this.occupied = [];
+    this.hitMap.miss = [];
+    this.hitMap.hit = [];
 
     for (const cell of this.gridMap.values()) {
       cell.reset();
@@ -117,6 +117,7 @@ export class Gameboard {
     for (const ship of this.shipList) {
       ship.reset();
     }
+    this.bufferMultiple = [];
   }
 
   createArrayOfShipInstances(arrayInput) {

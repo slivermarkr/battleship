@@ -19,7 +19,7 @@ export default class UI {
 
   static changeShipOrientation(shipEl) {
     const orientation = shipEl.dataset.orientation;
-
+    console.log("HELLO?");
     if (orientation == "v") {
       shipEl.setAttribute("data-orientation", "h");
     } else {
