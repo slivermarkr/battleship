@@ -1,6 +1,16 @@
 import { generateGridArray } from "../utils/fn.js";
 
 export default class UI {
+  static addBlurTable(root, tablename, gameover) {
+    if (!gameover) {
+      root
+        .querySelectorAll("table")
+        .forEach((table) => table.classList.remove("blur"));
+    }
+    const table = root.querySelector(`table#${tablename}`);
+    table.classList.add("blur");
+  }
+
   static shipSunk(coor, table) {
     for (let i = 0; i < coor.length; ++i) {
       table

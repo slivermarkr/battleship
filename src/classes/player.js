@@ -53,8 +53,8 @@ export class Computer extends Player {
 
     this.gridYetToAttack.splice(randomNum, 1);
 
-    console.log("coor options", this.gridYetToAttack);
-    console.log("COMPUTER COOR", coor);
+    // console.log("coor options", this.gridYetToAttack);
+    // console.log("COMPUTER COOR", coor);
     return coor;
   }
 

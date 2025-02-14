@@ -224,7 +224,7 @@ table {
   color: red;
   font-size: 2.5rem;
   bottom: 0.8rem;
-  left: 0.45rem;
+  left: 0.4rem;
   position: absolute;
   transform: rotate(-45deg);
 }
@@ -251,4 +251,8 @@ table {
 .winner {
   background-color: green;
   color: white;
+}
+
+.blur {
+  opacity: 0.5;
 }

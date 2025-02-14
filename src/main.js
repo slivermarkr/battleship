@@ -481,6 +481,8 @@ export default class App {
         winner,
         this.activePlayer instanceof Computer ? "You lose!" : "You Win!"
       );
+      UI.addBlurTable(this.root, this.playerOne.name, true);
+      UI.addBlurTable(this.root, this.playerTwo.name, true);
       // this.refresh();
       // this.playerOne.board.reset();
       // this.playerTwo.board.reset();
@@ -522,8 +524,10 @@ export default class App {
           nextPlayer,
           this.root.querySelector(`table#${nextPlayer.name}`)
         );
-      }, 600);
+        UI.addBlurTable(this.root, this.activePlayer.name);
+      }, 800);
     }
+    UI.addBlurTable(this.root, this.activePlayer.name);
     if (cell.isOccupied) {
       const ship = cell.shipData;
       this.controller.comboCount++;
@@ -557,8 +561,10 @@ export default class App {
             nextPlayer,
             this.root.querySelector(`table#${nextPlayer.name}`)
           );
-        }, 600);
+          UI.addBlurTable(this.root, this.activePlayer.name);
+        }, 800);
       }
+      UI.addBlurTable(this.root, this.activePlayer.name);
     }
   }
 
@@ -644,7 +650,7 @@ export default class App {
     this.appendShipElementToGridEl();
 
     // looping through the board.shiplist to get the ship.cluster so appopriate grid buffer
-    this.setBufferClasslist(this.playerOne.board);
+    // this.setBufferClasslist(this.playerOne.board);
   }
 
   onChooseClick() {}
@@ -655,6 +661,7 @@ export default class App {
 
   onReadyClick() {
     this.playerTwo.setShipRandomly();
+    UI.addBlurTable(this.root, this.activePlayer.name);
     // this.showOccupiedGrid(this.playerOne);
     // this.showOccupiedGrid(this.playerTwo);
     // this.setBufferClasslist(this.playerTwo.board);
