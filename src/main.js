@@ -38,6 +38,7 @@ export default class App {
 
     this.onGridListener();
     this.onLinkListener();
+    this.onGodMode();
   }
 
   refresh() {
@@ -467,26 +468,26 @@ export default class App {
   }
 
   checkForWin(isPlayerToBeAttackedDefeated, playerToBeAttname) {
-    let message;
-    if (isPlayerToBeAttackedDefeated) {
-      this.controller.isGameOver = true;
-      message =
-        playerToBeAttname == "You"
-          ? "You Lose! :("
-          : `Congratulations! You Win!`;
-      UI.updateInfor(this.root, message);
-      const winner = this.activePlayer instanceof Computer ? "loser" : "winner";
-      UI.showRematchModal(
-        this.root,
-        winner,
-        this.activePlayer instanceof Computer ? "You lose!" : "You Win!"
-      );
-      UI.addBlurTable(this.root, this.playerOne.name, true);
-      UI.addBlurTable(this.root, this.playerTwo.name, true);
-      // this.refresh();
-      // this.playerOne.board.reset();
-      // this.playerTwo.board.reset();
-    }
+    if (!isPlayerToBeAttackedDefeated) return;
+
+    this.controller.isGameOver = true;
+
+    const winner = playerToBeAttname === "Computer" ? "You" : "Computer";
+    const isComputerWinner = winner === "Computer";
+
+    const message = isComputerWinner
+      ? "You Lose! :("
+      : "Congratulations! You Win!";
+    UI.updateInfor(this.root, message);
+
+    UI.showRematchModal(
+      this.root,
+      isComputerWinner ? "loser" : "winner",
+      message
+    );
+
+    UI.addBlurTable(this.root, this.playerOne.name, true);
+    UI.addBlurTable(this.root, this.playerTwo.name, true);
   }
 
   checkForShipSinking(ship, table) {
@@ -573,7 +574,8 @@ export default class App {
       !this.controller.isReady ||
       activePlayer.name === cell.closest("table").id ||
       this.controller.isGameOver ||
-      cell.classList.contains("revealed")
+      cell.classList.contains("revealed") ||
+      cell.classList.contains("miss")
     )
       return;
     const nextPlayer = this.playerToReceiveAttack(this.activePlayer);
@@ -718,6 +720,19 @@ export default class App {
     });
   }
 
+  onGodMode() {
+    const header = document.querySelector("header");
+    header.addEventListener("click", (e) => {
+      this.showOccupiedGrid(this.playerTwo);
+      setTimeout(() => {
+        UI.removeGridHL(
+          generateGridArray(10),
+          "occupied",
+          this.root.querySelector(`table#${this.playerTwo.name}`)
+        );
+      }, 500);
+    });
+  }
   displayArena() {
     const lArena = this.root.querySelector(".lArena");
     const rArena = this.root.querySelector(".rArena");

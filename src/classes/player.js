@@ -16,18 +16,20 @@ export class Player {
 
   setShipRandomly() {
     this.board.reset();
+    let isValid = false;
 
-    for (let i = 0; i < this.board.shipList.length; ++i) {
-      const ship = this.board.shipList[i];
-      const res = generateRandomCluster(ship, this.board);
-      this.board.setShip(ship, res.cluster);
-      ship.orientation = res.orientation;
-    }
-    const res = [];
-    for (let i of this.board.gridMap.values()) {
-      if (i.isBuffer) {
-        res.push(i);
+    while (!isValid) {
+      for (let i = 0; i < this.board.shipList.length; ++i) {
+        const ship = this.board.shipList[i];
+        const res = generateRandomCluster(ship, this.board);
+        this.board.setShip(ship, res.cluster);
+        ship.orientation = res.orientation;
       }
+
+      if (this.board.occupied.length !== 20) this.board.reset();
+
+      console.log(this.board.occupied);
+      isValid = true;
     }
   }
 }

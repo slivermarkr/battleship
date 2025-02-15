@@ -142,6 +142,9 @@ table {
   width: var(--size);
 }
 
+.ship[data-orientation="h"] {
+  top: -0.3px;
+}
 .fleetSetupDiv {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -255,4 +258,17 @@ table {
 
 .blur {
   opacity: 0.5;
+}
+
+header {
+  font-size: 2rem;
+  cursor: pointer;
+}
+header:hover {
+  color: hotpink;
+}
+
+main,
+header {
+  padding-left: 2rem;
 }
