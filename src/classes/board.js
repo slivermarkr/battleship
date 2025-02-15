@@ -84,7 +84,6 @@ export class Gameboard {
 
       this.occupied = this.getOccupiedCells();
     }
-
     // get the adjlist of each coordianates excluding the coor itself and set isBuffer to true
     const bufferCluster = isBufferCluster(coordinates);
     for (const c of bufferCluster) {

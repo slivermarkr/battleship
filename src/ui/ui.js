@@ -1,6 +1,27 @@
-import { generateGridArray } from "../utils/fn.js";
+import { generateGridArray, isBufferCluster } from "../utils/fn.js";
 
 export default class UI {
+  static setBufferClasslist(root, { shipList, name }) {
+    const table = root.querySelector(`table#${name}`);
+    UI.removeGridHL(generateGridArray(10), "buffer", table);
+
+    for (let i = 0; i < shipList.length; ++i) {
+      if (!shipList[i].cluster) continue;
+      UI.bufferGridHl(root, isBufferCluster(shipList[i].cluster), name);
+    }
+  }
+
+  static showOccupiedGrid(root, { name, board }) {
+    const table = root.querySelector(`table#${name}`);
+    UI.clearTable(table);
+    for (let i = 0; i < board.occupied.length; ++i) {
+      const cell = table.querySelector(
+        `.grid[data-coordinate='${board.occupied[i]}']`
+      );
+      UI.occupiedGridHl(cell);
+    }
+  }
+
   static addBlurTable(root, tablename, gameover) {
     if (!gameover) {
       root

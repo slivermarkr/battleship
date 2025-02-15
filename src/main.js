@@ -450,21 +450,12 @@ export default class App {
       );
       cellEl.appendChild(shipElement);
     }
+    UI.showOccupiedGrid(this.root, this.playerOne);
+    UI.setBufferClasslist(this.root, this.playerOne.board);
   }
 
   playerToReceiveAttack(current) {
     return current.name === "You" ? this.playerTwo : this.playerOne;
-  }
-
-  showOccupiedGrid({ name, board }) {
-    const table = this.root.querySelector(`table#${name}`);
-    UI.clearTable(table);
-    for (let i = 0; i < board.occupied.length; ++i) {
-      const cell = table.querySelector(
-        `.grid[data-coordinate='${board.occupied[i]}']`
-      );
-      UI.occupiedGridHl(cell);
-    }
   }
 
   checkForWin(isPlayerToBeAttackedDefeated, playerToBeAttname) {
@@ -613,7 +604,6 @@ export default class App {
       this.playerOne.name
     );
 
-    // this.showOccupiedGrid(this.activePlayer);
     UI.updateInfor(this.root, `Setting ship...`);
     UI.removeGridHL(
       generateGridArray(10),
@@ -637,16 +627,6 @@ export default class App {
     // this.gridDragDropEventListener();
   }
 
-  setBufferClasslist({ shipList, name }) {
-    const table = this.root.querySelector(`table#${name}`);
-    UI.removeGridHL(generateGridArray(10), "buffer", table);
-
-    for (let i = 0; i < shipList.length; ++i) {
-      if (!shipList[i].cluster) continue;
-      UI.bufferGridHl(this.root, isBufferCluster(shipList[i].cluster), name);
-    }
-  }
-
   onRandomClick() {
     UI.updateInfor(this.root, `Ship ramdomized!`);
     this.appendShipElementToGridEl();
@@ -664,9 +644,6 @@ export default class App {
   onReadyClick() {
     this.playerTwo.setShipRandomly();
     UI.addBlurTable(this.root, this.activePlayer.name);
-    // this.showOccupiedGrid(this.playerOne);
-    // this.showOccupiedGrid(this.playerTwo);
-    // this.setBufferClasslist(this.playerTwo.board);
     if (
       !this.isFleetReady(this.playerOne.board.shipList) ||
       !this.isFleetReady(this.playerTwo.board.shipList)
@@ -723,7 +700,7 @@ export default class App {
   onGodMode() {
     const header = document.querySelector("header");
     header.addEventListener("click", (e) => {
-      this.showOccupiedGrid(this.playerTwo);
+      UI.showOccupiedGrid(this.root, this.playerTwo);
       setTimeout(() => {
         UI.removeGridHL(
           generateGridArray(10),

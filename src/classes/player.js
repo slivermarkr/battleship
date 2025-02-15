@@ -5,6 +5,7 @@ import {
   generateGridArray,
   getCoorAdjacentCorner,
   getCoorAdjacentList,
+  isCellClearForOccupation,
 } from "../utils/fn.js";
 
 export class Player {
@@ -14,22 +15,31 @@ export class Player {
     this.board = new Gameboard({ name: this.name, dimension: this.dimension });
   }
 
+  isClusterValid(cluster, board) {
+    return cluster.every((coor) => isCellClearForOccupation(coor, board));
+  }
+
   setShipRandomly() {
     this.board.reset();
-    let isValid = false;
+    let placedShips = 0;
+    let maxAttempts = 50;
 
-    while (!isValid) {
-      for (let i = 0; i < this.board.shipList.length; ++i) {
-        const ship = this.board.shipList[i];
-        const res = generateRandomCluster(ship, this.board);
-        this.board.setShip(ship, res.cluster);
+    while (placedShips < this.board.shipList.length && maxAttempts > 0) {
+      const ship = this.board.shipList[placedShips];
+      const res = generateRandomCluster(ship, this.board);
+
+      if (res && this.isClusterValid(res.cluster, this.board)) {
         ship.orientation = res.orientation;
+        this.board.setShip(ship, res.cluster);
+        placedShips++;
       }
+      maxAttempts--;
+    }
 
-      if (this.board.occupied.length !== 20) this.board.reset();
-
-      console.log(this.board.occupied);
-      isValid = true;
+    if (maxAttempts === 0) {
+      throw new Error(
+        "Failed to place ships randomly. Press the 'Randomize' link to try again."
+      );
     }
   }
 }
