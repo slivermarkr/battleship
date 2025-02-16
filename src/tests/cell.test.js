@@ -4,10 +4,13 @@ import { Gameboard } from "../classes/board";
 const output = {
   coor: "A,1",
   isOccupied: false,
-  isBuffer: false,
+  bufferCount: 0,
   isAttacked: false,
   shipData: undefined,
   adjacentList: undefined,
+  isBuffer() {
+    return false;
+  },
 };
 
 const ship = {
@@ -19,12 +22,13 @@ describe("GridCell test", () => {
   test("cell output", () => {
     const coor = "A,1";
     const cell = new GridCell(coor);
-    expect(cell.isBuffer).toBe(output.isBuffer);
+    expect(cell.isBuffer()).toBe(output.isBuffer());
     expect(cell.isOccupied).toBe(output.isOccupied);
     expect(cell.coor).toBe(output.coor);
     expect(cell.adjacentList).toBe(output.adjacentList);
     expect(cell.shipData).toBe(output.shipData);
     expect(cell.isAttacked).toBe(output.isAttacked);
+    expect(cell.bufferCount).toBe(output.bufferCount);
   });
 
   //if cell is occupied
@@ -59,14 +63,14 @@ describe("Cell.reset()", () => {
   const cell = new GridCell("A,1");
   cell.isOccupied = true;
   cell.isAttacked = true;
-  cell.isBuffer = false;
   cell.takeShip({ size: 3, index: 1 });
   cell.reset();
   it("reset cell properties to false, and ship to undefined", () => {
     expect(cell.isOccupied).toBe(false);
     expect(cell.isAttacked).toBe(false);
-    expect(cell.isBuffer).toBe(false);
+    expect(cell.isBuffer()).toBe(false);
     expect(cell.shipData).toBe(undefined);
+    expect(cell.bufferCount).toBe(0);
   });
 });
 

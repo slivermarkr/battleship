@@ -118,3 +118,8 @@ TODO: create a better algorithm to set ship randomly
 
 - maybe create a separate checkMethod onClick
 - when you click on a ship and it's possibleCluster if a buffer. it decrements the bufferCount so when the ship is clicked multiple times is sees the cell as valid.
+
+# ON Refactor branch
+
+- implement the change orientation
+- find other ways to reset the buffer depending on the the event

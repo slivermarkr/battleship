@@ -6,6 +6,7 @@ import {
   getCoorAdjacentCorner,
   getCoorAdjacentList,
   isCellClearForOccupation,
+  generateRandomCoordinates,
 } from "../utils/fn.js";
 
 export class Player {
@@ -86,9 +87,6 @@ export class Computer extends Player {
 }
 const com = new Computer({});
 
-// com.attackRandomly();
-// com.attackRandomly();
-// com.attackRandomly();
-// com.attackRandomly();
-// console.log(com.gridYetToAttack.length);
-// console.log(com instanceof Player);
+const res = generateRandomCluster({ size: 3 }, com.board);
+// const res = isCellClearForOccupation("A,11", com.board);
+console.log(res);

@@ -111,8 +111,10 @@ export function generateRandomCoordinates() {
 }
 
 export function isCellClearForOccupation(coor, { occupied, gridMap }) {
-  const cell = gridMap.get(coor) || {};
-  return !occupied.includes(coor) && !cell.isBuffer; // returns true if cell.isBuffer = false && !occupied.includes(coor)
+  if (!gridMap.has(coor)) return false;
+
+  const cell = gridMap.get(coor);
+  return !occupied.includes(coor) && !cell.isBuffer(); // returns true if cell.isBuffer() = false && !occupied.includes(coor)
 }
 
 export function generateRandomCluster({ size }, { occupied, gridMap }) {
@@ -126,7 +128,6 @@ export function generateRandomCluster({ size }, { occupied, gridMap }) {
     const coor = generateRandomCoordinates();
 
     if (!isCellClearForOccupation(coor, { occupied, gridMap })) continue;
-
     cluster.push(coor);
 
     const coorAsInteger = convertCoorToInt(coor); //returns [1,1] ex. "A,1"
@@ -177,7 +178,6 @@ export function calculatePossibleCluster(
       nextCoor = `${String.fromCharCode(coorInt[0] + i + 64)},${coorInt[1]}`;
     }
     const cell = gridMap.get(nextCoor);
-    console.log(cell);
     if (isValidCoor(nextCoor)) {
       result.push(nextCoor);
     } else {
@@ -190,7 +190,6 @@ export function calculatePossibleCluster(
     //we need a new starting point dimension - size
     result = [];
 
-    console.log(isOverFlow);
     for (let i = dimension - size + 1; i <= dimension; ++i) {
       if (orientation == "h") {
         nextCoor = `${String.fromCharCode(coorInt[0] + 64)},${i}`;
@@ -203,12 +202,5 @@ export function calculatePossibleCluster(
   } else {
     result.unshift(coor);
   }
-  // console.log(result);
   return result;
 }
-
-// calculatePossibleCluster(
-//   "J,8",
-//   { size: 2, orientation: "v" },
-//   { dimension: 10 }
-// );

@@ -10,9 +10,11 @@ import {
   isBufferCluster,
   generateRandomCoordinates,
   generateRandomCluster,
+  isCellClearForOccupation,
 } from "../utils/fn";
 
 import { Gameboard } from "../classes/board.js";
+
 describe("generateRandomNumber", function () {
   test("generateRandomNumber should not be > 10", () => {
     for (let i = 0; i < 100; ++i) {
@@ -125,7 +127,7 @@ describe("generateRandomCoordinate()", function () {
 
 describe("generateRandomCluster given a size and an array of occupied grid", function () {
   it("", () => {
-    const board = new Gameboard({ name: "Me" });
+    const board = new Gameboard({ name: "Me", dimension: 10 });
     const cluster = generateRandomCluster(board.shipList[0], board); // return {cluster: [], orientation: "h"}
 
     for (const element of cluster.cluster) {
@@ -164,4 +166,14 @@ describe("#calculatePossibleCluster", function () {
     board
   );
   expect(result).toEqual(expect.arrayContaining(["A,2", "A,3"]));
+});
+
+describe("#isCellClearForOccupation", function () {
+  const board = new Gameboard({ name: "ME", dimension: 10 });
+  it("valid cell", () => {
+    expect(isCellClearForOccupation("A,1", board)).toBe(true);
+  });
+  it("invalid cell", () => {
+    expect(isCellClearForOccupation("A,11", board)).toBe(false);
+  });
 });

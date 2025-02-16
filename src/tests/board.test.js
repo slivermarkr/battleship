@@ -169,7 +169,7 @@ describe("board.setShip(shipParams, coordinates)", function () {
   it("coordinates adjList element must be set to isBuffer = true", () => {
     const bufferArray = isBufferCluster(coordinates);
     for (let i = 0; i < bufferArray.length; ++i) {
-      expect(board.gridMap.get(bufferArray[i]).isBuffer).toBe(true);
+      expect(board.gridMap.get(bufferArray[i]).isBuffer()).toBe(true);
     }
   });
 
@@ -208,7 +208,7 @@ describe("board.reset()", () => {
     for (const cell of board.gridMap.values()) {
       expect(cell.isOccupied).toBe(false);
       expect(cell.isAttacked).toBe(false);
-      expect(cell.isBuffer).toBe(false);
+      expect(cell.isBuffer()).toBe(false);
       expect(cell.shipData).toBe(undefined);
     }
   });

@@ -4,6 +4,7 @@ import {
   isBufferCluster,
   getCoorAdjacentList,
   getCoorAdjacentCorner,
+  isCellClearForOccupation,
 } from "../utils/fn.js";
 import GridCell from "./cell.js";
 import Ship from "./ship.js";
@@ -73,7 +74,7 @@ export class Gameboard {
     for (let coor of coordinates) {
       if (this.occupied.some((cell) => cell == coor)) {
         throw new Error("coordinate is already occupied");
-      } else if (this.gridMap.get(coor).isBuffer) {
+      } else if (this.gridMap.get(coor).isBuffer()) {
         throw new Error("coordinate is already buffer");
       }
     }
@@ -89,7 +90,6 @@ export class Gameboard {
     for (const c of bufferCluster) {
       const cell = this.gridMap.get(c);
       cell.bufferCount++;
-      cell.isBuffer = true;
       this.bufferMultiple = this.getBufferWithMoreThanOneCount();
     }
     // console.log("buffer with muptiple ships", this.bufferMultiple);
@@ -150,56 +150,10 @@ export class Gameboard {
     return this.shipList[shipIdx];
   }
 
-  resetShipClusterAdjacentList(shipClusterArray, coor) {
-    console.log(shipClusterArray);
-    const map = new Set();
-    for (let i = 0; i < shipClusterArray.length; ++i) {
-      const cell = this.gridMap.get(shipClusterArray[i]);
-      //it's cell.bufferCount not cell.isBuffer LOL
-      const cellAdj = getCoorAdjacentList(shipClusterArray[i]);
-      for (const coorAdj of cellAdj) {
-        if (coorAdj === coor) {
-          console.log(coorAdj === coor);
-          continue;
-        }
-        const buffadj = this.gridMap.get(coorAdj);
-        // console.log("each of results", coorAdj, buffadj);
-        console.log("fuck this shit", buffadj.shipData);
-        if (!buffadj.shipData) {
-          // console.log("THIS CELL HAS SHIP IN IT", buffadj);
-          console.log(buffadj.coor);
-          console.log("CELL TO RESET", cell.coor);
-          map.add(cell.coor);
-          cell.reset();
-        }
-      }
-      console.log(map);
-      // if (cell.bufferCount > 1) {
-      //   // const bufferAdjList = new Set(getCoorAdjacentList())
-      //   cell.bufferCount--;
-      // } else {
-      //   cell.reset();
-      // }
-
-      // this.bufferMultiple = this.getBufferWithMoreThanOneCount();
-    }
-  }
-
-  // for (const coor of result) {
-  //   const cell = this.activePlayer.board.gridMap.get(coor);
-  //   const cellAdj = getCoorAdjacentCorner(coor);
-  //   for (const coorAdj of cellAdj) {
-  //     const buffadj = this.activePlayer.board.gridMap.get(coorAdj);
-  //     console.log("each of results", coorAdj, buffadj);
-  //   }
-  // }
   isFleetAllSet() {
     return this.shipList.every((ship) => ship.isSet);
   }
 }
-
-// const board = new Gameboard({ name: "You", dimension: 10 });
-
 // for (const ship of board.shipList) {
 //   ship.isSet = true;
 // }
