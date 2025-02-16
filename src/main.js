@@ -56,6 +56,7 @@ export default class App {
     this.displayArena();
     // randomly append ship
     this.appendShipElementToGridEl();
+    this.onShipClickListener();
     // this.showOccupiedGrid(this.playerOne);
     // this.onClickListener();
     // this.shipDragEventListener(this.playerOne);
@@ -63,6 +64,41 @@ export default class App {
     // this.setBufferClasslist(this.activePlayer.board);
   }
 
+  #orientation;
+  changeShipOrientation(ship) {
+    const shipObj = this.activePlayer.board.getCorrespondingShip({
+      index: ship.dataset.index,
+      size: ship.dataset.size,
+    });
+    const shipObjClusterCopy = shipObj.cluster;
+    // get the opposite orientation cluster
+    // const pcluster = calculatePossibleCluster(
+    //   shipObj.cluster,
+    //   shipObj,
+    //   this.activePlayer.board
+    // );
+    this.activePlayer.board.resetClusterOnShipOrientationChange(
+      shipObj.cluster
+    );
+    console.log(this.activePlayer.board.occupied);
+    UI.showOccupiedGrid(this.root, this.activePlayer);
+    UI.bufferGridHl(
+      this.root,
+      this.activePlayer.board.buffers,
+      this.activePlayer.name
+    );
+    // console.log("this is the cluster we gonna go to", pcluster);
+    // shipObj.reset();
+  }
+
+  #shipClickListener;
+  onShipClickListener() {
+    this.root.addEventListener("click", (e) => {
+      if (e.target.classList.contains("ship")) {
+        this.changeShipOrientation(e.target);
+      }
+    });
+  }
   // checkForCollisionOnChangeOrientation(shipEl) {
   //   const shipObj = this.activePlayer.board.getCorrespondingShip({
   //     size: shipEl.dataset.size,
@@ -451,7 +487,12 @@ export default class App {
       cellEl.appendChild(shipElement);
     }
     UI.showOccupiedGrid(this.root, this.playerOne);
-    UI.setBufferClasslist(this.root, this.playerOne.board);
+    UI.bufferGridHl(
+      this.root,
+      this.playerOne.board.buffers,
+      this.playerOne.name
+    );
+    // UI.setBufferClasslist(this.root, this.playerOne.board);
   }
 
   playerToReceiveAttack(current) {

@@ -157,7 +157,7 @@ describe("#calculatePossibleCluster", function () {
   const board = new Gameboard({ name: "You", dimension: 10 });
   const coor = "A,1";
   const shipSize = 3;
-  const orientation = "h";
+  const orientation = "v";
   // calculate possible cluster
   // if the e.target.coordinate is "A,1" and the orientation is "h" function should return ["A,2", "A,3"]
   const result = calculatePossibleCluster(

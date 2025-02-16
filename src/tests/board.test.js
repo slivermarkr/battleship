@@ -330,3 +330,27 @@ describe("isFleetAllSet", function () {
     expect(board.isFleetAllSet()).toBe(false);
   });
 });
+
+// describe("changeOrientationReset", function () {
+//   const board = new Gameboard(input);
+//   const ship = board.shipList[4];
+//   const coor = "C,2";
+//   board.setShip(ship, [coor]);
+// });
+
+describe("#checkForMultipleBuffer", function () {
+  const board = new Gameboard(input);
+  const ship = board.shipList[0];
+  const coor = "C,2";
+  board.setShip(ship, [coor]);
+  it("check for one coordinate", () => {
+    const cell = board.gridMap.get(coor);
+    expect(cell.isOccupied).toBe(true);
+    for (const c of cell.getAdjacentList()) {
+      const clusterCell = board.gridMap.get(c);
+      expect(clusterCell.isBuffer()).toBe(true);
+      expect(clusterCell.bufferCount).toBe(1);
+    }
+    expect(board.checkForMultipleBuffer(coor)).toBe(false);
+  });
+});

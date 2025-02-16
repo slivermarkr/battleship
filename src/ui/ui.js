@@ -1,15 +1,25 @@
 import { generateGridArray, isBufferCluster } from "../utils/fn.js";
 
 export default class UI {
-  static setBufferClasslist(root, { shipList, name }) {
-    const table = root.querySelector(`table#${name}`);
-    UI.removeGridHL(generateGridArray(10), "buffer", table);
+  static bufferGridHl(root, cluster, table) {
+    const tableEl = root.querySelector(`table#${table}`);
+    UI.removeGridHL(generateGridArray(10), "buffer", tableEl);
 
-    for (let i = 0; i < shipList.length; ++i) {
-      if (!shipList[i].cluster) continue;
-      UI.bufferGridHl(root, isBufferCluster(shipList[i].cluster), name);
+    console.log(cluster);
+    for (let i = 0; i < cluster.length; ++i) {
+      const gridEl = tableEl.querySelector(
+        `.grid[data-coordinate="${cluster[i].coor}"]`
+      );
+      gridEl.classList.add("buffer");
     }
   }
+
+  // static setBufferClasslist(root, { buffers, name }) {
+  //   const table = root.querySelector(`table#${name}`);
+  //   UI.removeGridHL(generateGridArray(10), "buffer", table);
+
+  //   UI.bufferGridHl(root, isBufferCluster(buffers), name);
+  // }
 
   static showOccupiedGrid(root, { name, board }) {
     const table = root.querySelector(`table#${name}`);
@@ -100,16 +110,6 @@ export default class UI {
 
   static onDragStart(ship) {
     // console.log("You start dragging " + ship);
-  }
-
-  static bufferGridHl(root, cluster, table) {
-    const tableEl = root.querySelector(`table#${table}`);
-    for (let i = 0; i < cluster.length; ++i) {
-      const gridEl = tableEl.querySelector(
-        `.grid[data-coordinate="${cluster[i]}"]`
-      );
-      gridEl.classList.add("buffer");
-    }
   }
 
   static updateInfor(root, message) {

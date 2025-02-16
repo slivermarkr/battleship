@@ -21,7 +21,8 @@ export class Gameboard {
     this.name = name;
     this.dimension = dimension;
     this.gridMap = new Map();
-    this.occupied = [];
+    this.occupied = this.getOccupiedCells();
+    this.buffers = this.getBufferCells();
     this.bufferMultiple = [];
     this.hitMap = {
       hit: [],
@@ -91,6 +92,7 @@ export class Gameboard {
       const cell = this.gridMap.get(c);
       cell.bufferCount++;
       this.bufferMultiple = this.getBufferWithMoreThanOneCount();
+      this.buffers = this.getBufferCells();
     }
     // console.log("buffer with muptiple ships", this.bufferMultiple);
     // console.log("BUFFER on board.js", bufferCluster);
@@ -108,6 +110,7 @@ export class Gameboard {
 
   reset() {
     this.occupied = [];
+    this.buffers = [];
     this.hitMap.miss = [];
     this.hitMap.hit = [];
 
@@ -152,6 +155,44 @@ export class Gameboard {
 
   isFleetAllSet() {
     return this.shipList.every((ship) => ship.isSet);
+  }
+
+  checkForMultipleBuffer(coor) {
+    const cell = this.gridMap.get(coor);
+    return cell.bufferCount > 1;
+  }
+
+  getBufferCells() {
+    const res = [];
+    for (const cell of this.gridMap.values()) {
+      if (cell.isBuffer()) {
+        res.push(cell);
+      }
+    }
+    return res;
+  }
+
+  resetClusterOnShipOrientationChange(cluster) {
+    const clusterBuffer = isBufferCluster(cluster);
+
+    for (const c of cluster) {
+      const cell = this.gridMap.get(c);
+      cell.reset();
+      console.log("reset", cell);
+    }
+    //determine if buffer serves more than one ship. If not reset it else do not reset.
+    for (const c of clusterBuffer) {
+      const cell = this.gridMap.get(c);
+      if (cell.bufferCount <= 1) {
+        cell.reset();
+        console.log("reset", cell);
+      }
+    }
+    console.log("cluster", cluster);
+    console.log("buffer", clusterBuffer);
+    this.occupied = this.getOccupiedCells();
+    this.buffers = this.getBufferCells();
+    this.bufferMultiple = this.getBufferWithMoreThanOneCount();
   }
 }
 // for (const ship of board.shipList) {

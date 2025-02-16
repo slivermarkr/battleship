@@ -114,6 +114,7 @@ export function isCellClearForOccupation(coor, { occupied, gridMap }) {
   if (!gridMap.has(coor)) return false;
 
   const cell = gridMap.get(coor);
+  console.log(cell);
   return !occupied.includes(coor) && !cell.isBuffer(); // returns true if cell.isBuffer() = false && !occupied.includes(coor)
 }
 
@@ -160,10 +161,11 @@ export function generateRandomCluster({ size }, { occupied, gridMap }) {
 
 // there's a better way of doing these but for now this will hopefully do.
 export function calculatePossibleCluster(
-  coor,
+  coordinates,
   { size, orientation },
   { gridMap, dimension, occupied } = {}
 ) {
+  const coor = coordinates[0];
   const coorInt = convertCoorToInt(coor); // if given "A,1" return [1,1]
   let result = [];
   let nextCoor;
@@ -172,12 +174,12 @@ export function calculatePossibleCluster(
   // console.log(gridMap.get("A,1"));
   // if h then increase the right side
   for (let i = 1; i < size; ++i) {
-    if (orientation == "h") {
+    if (orientation == "v") {
       nextCoor = `${String.fromCharCode(coorInt[0] + 64)},${coorInt[1] + i}`;
-    } else if (orientation == "v") {
+    } else if (orientation == "h") {
       nextCoor = `${String.fromCharCode(coorInt[0] + i + 64)},${coorInt[1]}`;
     }
-    const cell = gridMap.get(nextCoor);
+
     if (isValidCoor(nextCoor)) {
       result.push(nextCoor);
     } else {
@@ -191,9 +193,9 @@ export function calculatePossibleCluster(
     result = [];
 
     for (let i = dimension - size + 1; i <= dimension; ++i) {
-      if (orientation == "h") {
+      if (orientation == "v") {
         nextCoor = `${String.fromCharCode(coorInt[0] + 64)},${i}`;
-      } else if (orientation == "v") {
+      } else if (orientation == "h") {
         nextCoor = `${String.fromCharCode(64 + i)},${coorInt[1]}`;
       }
 
@@ -202,5 +204,10 @@ export function calculatePossibleCluster(
   } else {
     result.unshift(coor);
   }
+
+  const isOppositeClusterValid = result.every((coor) =>
+    isCellClearForOccupation(coor, { occupied, gridMap })
+  );
+  console.log(result, isOppositeClusterValid);
   return result;
 }
