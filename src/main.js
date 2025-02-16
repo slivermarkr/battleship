@@ -72,15 +72,28 @@ export default class App {
     });
     const shipObjClusterCopy = shipObj.cluster;
     // get the opposite orientation cluster
-    // const pcluster = calculatePossibleCluster(
-    //   shipObj.cluster,
-    //   shipObj,
-    //   this.activePlayer.board
-    // );
     this.activePlayer.board.resetClusterOnShipOrientationChange(
       shipObj.cluster
     );
-    console.log(this.activePlayer.board.occupied);
+    const newCluster = calculatePossibleCluster(
+      shipObj.cluster,
+      shipObj,
+      this.activePlayer.board
+    );
+    console.log("possible cluster", newCluster.cluster);
+
+    shipObj.reset();
+    shipObj.orientation = newCluster.orientation;
+    this.activePlayer.board.setShip(shipObj, newCluster.cluster);
+
+    // UI.changeShipOrientation(ship);
+    UI.changeShipOrientation(
+      this.root,
+      newCluster.cluster[0],
+      ship,
+      shipObj.orientation,
+      this.activePlayer.name
+    );
     UI.showOccupiedGrid(this.root, this.activePlayer);
     UI.bufferGridHl(
       this.root,
@@ -602,6 +615,8 @@ export default class App {
   }
 
   onGridClick(cell, activePlayer) {
+    const c = activePlayer.board.gridMap.get(cell.dataset.coordinate);
+    console.log(c);
     if (
       !this.controller.isReady ||
       activePlayer.name === cell.closest("table").id ||

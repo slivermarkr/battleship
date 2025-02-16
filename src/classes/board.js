@@ -185,11 +185,10 @@ export class Gameboard {
       const cell = this.gridMap.get(c);
       if (cell.bufferCount <= 1) {
         cell.reset();
-        console.log("reset", cell);
+      } else {
+        cell.bufferCount--;
       }
     }
-    console.log("cluster", cluster);
-    console.log("buffer", clusterBuffer);
     this.occupied = this.getOccupiedCells();
     this.buffers = this.getBufferCells();
     this.bufferMultiple = this.getBufferWithMoreThanOneCount();

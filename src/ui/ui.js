@@ -58,14 +58,11 @@ export default class UI {
     root.querySelectorAll(".grid").forEach((grid) => (grid.style.zIndex = 100));
   }
 
-  static changeShipOrientation(shipEl) {
-    const orientation = shipEl.dataset.orientation;
-    console.log("HELLO?");
-    if (orientation == "v") {
-      shipEl.setAttribute("data-orientation", "h");
-    } else {
-      shipEl.setAttribute("data-orientation", "v");
-    }
+  static changeShipOrientation(root, gridElCoor, shipEl, orientation, name) {
+    const table = root.querySelector(`table#${name}`);
+    const grid = table.querySelector(`.grid[data-coordinate="${gridElCoor}"]`);
+    shipEl.setAttribute("data-orientation", orientation);
+    grid.appendChild(shipEl);
   }
 
   static showTheRightSideArenaWhenShipAllSet(root) {

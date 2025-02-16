@@ -169,6 +169,7 @@ export function calculatePossibleCluster(
   const coorInt = convertCoorToInt(coor); // if given "A,1" return [1,1]
   let result = [];
   let nextCoor;
+  let newOrientation;
   let isOverFlow = false;
 
   // console.log(gridMap.get("A,1"));
@@ -182,32 +183,33 @@ export function calculatePossibleCluster(
 
     if (isValidCoor(nextCoor)) {
       result.push(nextCoor);
-    } else {
-      isOverFlow = true;
-      break;
     }
   }
 
-  if (isOverFlow) {
-    //we need a new starting point dimension - size
-    result = [];
+  // if (isOverFlow) {
+  //   //we need a new starting point dimension - size
+  //   result = [];
 
-    for (let i = dimension - size + 1; i <= dimension; ++i) {
-      if (orientation == "v") {
-        nextCoor = `${String.fromCharCode(coorInt[0] + 64)},${i}`;
-      } else if (orientation == "h") {
-        nextCoor = `${String.fromCharCode(64 + i)},${coorInt[1]}`;
-      }
+  //   for (let i = dimension - size + 1; i <= dimension; ++i) {
+  //     if (orientation == "v") {
+  //       nextCoor = `${String.fromCharCode(coorInt[0] + 64)},${i}`;
+  //     } else if (orientation == "h") {
+  //       nextCoor = `${String.fromCharCode(64 + i)},${coorInt[1]}`;
+  //     }
 
-      result.push(nextCoor);
-    }
-  } else {
-    result.unshift(coor);
-  }
+  //     result.push(nextCoor);
+  //   }
+  // } else {
+  result.unshift(coor);
+  // }
 
   const isOppositeClusterValid = result.every((coor) =>
     isCellClearForOccupation(coor, { occupied, gridMap })
   );
-  console.log(result, isOppositeClusterValid);
-  return result;
+
+  newOrientation = orientation == "h" && isOppositeClusterValid ? "v" : "h";
+
+  return isOppositeClusterValid && result.length === size
+    ? { cluster: result, orientation: newOrientation }
+    : { cluster: coordinates, orientation };
 }
