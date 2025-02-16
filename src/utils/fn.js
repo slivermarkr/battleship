@@ -114,7 +114,8 @@ export function isCellClearForOccupation(coor, { occupied, gridMap }) {
   if (!gridMap.has(coor)) return false;
 
   const cell = gridMap.get(coor);
-  console.log(cell);
+
+  console.log("clear?", cell);
   return !occupied.includes(coor) && !cell.isBuffer(); // returns true if cell.isBuffer() = false && !occupied.includes(coor)
 }
 

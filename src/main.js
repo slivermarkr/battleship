@@ -38,6 +38,7 @@ export default class App {
 
     this.onGridListener();
     this.onLinkListener();
+    this.onShipClickListener();
     this.onGodMode();
   }
 
@@ -56,7 +57,6 @@ export default class App {
     this.displayArena();
     // randomly append ship
     this.appendShipElementToGridEl();
-    this.onShipClickListener();
     // this.showOccupiedGrid(this.playerOne);
     // this.onClickListener();
     // this.shipDragEventListener(this.playerOne);
@@ -80,7 +80,7 @@ export default class App {
       shipObj,
       this.activePlayer.board
     );
-    console.log("possible cluster", newCluster.cluster);
+    // console.log("possible cluster", newCluster.cluster);
 
     shipObj.reset();
     shipObj.orientation = newCluster.orientation;
@@ -108,6 +108,7 @@ export default class App {
   onShipClickListener() {
     this.root.addEventListener("click", (e) => {
       if (e.target.classList.contains("ship")) {
+        console.log("SHIP CLIECK");
         this.changeShipOrientation(e.target);
       }
     });

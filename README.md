@@ -123,3 +123,7 @@ TODO: create a better algorithm to set ship randomly
 
 - implement the change orientation
 - find other ways to reset the buffer depending on the the event
+
+# Found the Bug
+
+- so what happned was the the evenlister doubled up so when i rotate and drag the event cancels out

@@ -64,6 +64,7 @@ export class Gameboard {
   }
 
   setShip(shipObj, coordinates) {
+    console.log(shipObj);
     if (shipObj.isSet) throw new Error("SHIP ALREADY SET");
     if (shipObj.size !== coordinates.length)
       throw new Error("shipObj.size !== coordinates.length");
@@ -121,6 +122,8 @@ export class Gameboard {
     for (const ship of this.shipList) {
       ship.reset();
     }
+    console.log("THIS IS THE SHIP LIST", this.shipList);
+
     this.bufferMultiple = [];
   }
 
