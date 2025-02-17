@@ -10,6 +10,19 @@ import {
   showNewCluster,
 } from "../utils/fn.js";
 
+const defaultPosition = [
+  { coor: ["A,2"], orientation: "v" },
+  { coor: ["B,7"], orientation: "v" },
+  { coor: ["G,8"], orientation: "v" },
+  { coor: ["I,1"], orientation: "v" },
+  { coor: ["A,5", "B,5"], orientation: "v" },
+  { coor: ["D,1", "D,2"], orientation: "h" },
+  { coor: ["D,4", "E,4"], orientation: "v" },
+  { coor: ["C,9", "D,9", "E,9"], orientation: "v" },
+  { coor: ["H,4", "I,4", "J,4"], orientation: "v" },
+  { coor: ["J,6", "J,7", "J,8", "J,9"], orientation: "h" },
+];
+
 export class Player {
   constructor({ name, dimension = 10 }) {
     this.name = name;
@@ -19,6 +32,15 @@ export class Player {
 
   isClusterValid(cluster, board) {
     return cluster.every((coor) => isCellClearForOccupation(coor, board));
+  }
+
+  setShipToDefault() {
+    this.board.reset();
+    for (let i = 0; i < this.board.shipList.length; ++i) {
+      const ship = this.board.shipList[i];
+      ship.orientation = defaultPosition[i].orientation;
+      this.board.setShip(ship, defaultPosition[i].coor);
+    }
   }
 
   setShipRandomly() {
@@ -86,9 +108,9 @@ export class Computer extends Player {
     );
   }
 }
-const com = new Computer({});
-
+// const com = new Player({});
+// com.setShipToDefault();
 // const res = generateRandomCluster({ size: 3 }, com.board);
-const res = showNewCluster(["J,10"], { size: 3, orientation: "v" }, com.board);
-console.log(res);
+// const res = showNewCluster(["J,10"], { size: 3, orientation: "v" }, com.board);
+// console.log(res);
 // const res = isCellClearForOccupation("A,11", com.board);

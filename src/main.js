@@ -61,7 +61,7 @@ export default class App {
     this.playerTwo.board.reset();
     this.displayArena();
     // randomly append ship
-    this.appendShipElementToGridEl();
+    this.appendShipElementToGridEl("default");
   }
 
   setShipOnDrop(ship, cluster, activePlayer, shipEl) {
@@ -310,7 +310,12 @@ export default class App {
   #shipClickListener;
   onShipClickListener() {
     this.root.addEventListener("click", (e) => {
-      if (e.target.classList.contains("ship")) {
+      const table = this.root.querySelector(`table#${this.activePlayer.name}`);
+      if (
+        e.target.classList.contains("ship") &&
+        e.target.closest("table") !== null &&
+        !this.controller.isReady
+      ) {
         console.log("SHIP CLIECK");
         this.changeShipOrientation(e.target);
       }
@@ -318,13 +323,17 @@ export default class App {
   }
 
   // this only applies on playerOne not computerAI
-  appendShipElementToGridEl() {
+  appendShipElementToGridEl(option) {
     const board = this.playerOne.board;
     const table = this.root.querySelector(`table#${this.playerOne.name}`);
 
     //remove old ships
     table.querySelectorAll(".ship").forEach((ship) => ship.remove());
-    this.playerOne.setShipRandomly();
+    if (option === "default") {
+      this.playerOne.setShipToDefault();
+    } else if (option === "random") {
+      this.playerOne.setShipRandomly();
+    }
 
     for (let i = 0; i < board.shipList.length; ++i) {
       const shipObj = board.shipList[i];
@@ -519,7 +528,7 @@ export default class App {
 
   onRandomClick() {
     UI.updateInfor(this.root, `Ship ramdomized!`);
-    this.appendShipElementToGridEl();
+    this.appendShipElementToGridEl("random");
 
     UI.removeGridHL(
       generateGridArray(10),
@@ -531,7 +540,15 @@ export default class App {
     // this.setBufferClasslist(this.playerOne.board);
   }
 
-  onChooseClick() {}
+  onChooseClick() {
+    UI.showChooseModal(this.root);
+    // UI.updateInfor();
+    // UI.showRematchModal(
+    //   this.root,
+    //   "choose",
+    //   "Sorry, PvP to be implemented soon."
+    // );
+  }
 
   isFleetReady(shipList) {
     return shipList.some((ship) => ship.isSet);
@@ -561,8 +578,7 @@ export default class App {
       this.dragState.dragItemEl = undefined;
       this.dragState.dragObject = undefined;
       this.dragState.dragItemPreviousCluster = undefined;
-      UI.showOccupiedGrid(this.root, this.activePlayer);
-      // UI.isReadyForBatlle(this.root);
+      UI.isReadyForBatlle(this.root);
     }
   }
 
@@ -598,13 +614,6 @@ export default class App {
     const header = document.querySelector("header");
     header.addEventListener("click", (e) => {
       UI.showOccupiedGrid(this.root, this.playerTwo);
-      setTimeout(() => {
-        UI.removeGridHL(
-          generateGridArray(10),
-          "occupied",
-          this.root.querySelector(`table#${this.playerTwo.name}`)
-        );
-      }, 500);
     });
   }
 
@@ -616,7 +625,7 @@ export default class App {
     lArena.appendChild(UI.createGridBox(this.playerOne));
     rArena.appendChild(UI.createGridBox(this.playerTwo));
     rArena.classList.add("blur");
-    UI.updateInfor(this.root, "Prepare Your Fleet");
+    UI.updateInfor(this.root, "Click 'Ready' whenever you are.");
   }
 
   initHTML() {

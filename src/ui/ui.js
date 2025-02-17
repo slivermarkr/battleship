@@ -59,9 +59,7 @@ export default class UI {
   static isReadyForBatlle(root) {
     root
       .querySelectorAll(".ship")
-      .forEach((ship) => ship.classList.add("disableShip"));
-
-    root.querySelectorAll(".grid").forEach((grid) => (grid.style.zIndex = 100));
+      .forEach((ship) => ship.setAttribute("draggable", false));
   }
 
   static changeShipOrientation(
@@ -133,6 +131,24 @@ export default class UI {
     root.querySelector(".info").textContent = message;
   }
 
+  static showChooseModal(root) {
+    const modal = root.querySelector(".chooseModal");
+    modal.classList.add("choose");
+    modal.textContent = "";
+
+    const p = document.createElement("p");
+    p.textContent = "Sorry, PvP mode is not implemented yet.";
+    modal.appendChild(p);
+
+    const closeBtn = document.createElement("button");
+    closeBtn.textContent = "Close";
+    closeBtn.addEventListener("click", (e) => {
+      modal.close();
+    });
+    modal.appendChild(closeBtn);
+
+    modal.showModal();
+  }
   static showRematchModal(root, className, message) {
     const modal = root.querySelector(".rematchModal");
     modal.classList.add(className);

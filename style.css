@@ -279,3 +279,9 @@ header {
 .ship.greenShip {
   border: 2px rgb(140, 255, 0) solid;
 }
+
+.choose {
+  background-color: black;
+  color: white;
+  font-size: 2rem;
+}
