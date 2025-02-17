@@ -84,9 +84,7 @@ TODO: create a better algorithm to set ship randomly
 
 <!-- - allow computer to hit random grid -->
 
-- make algorithm that allows computer to pick adjacent cell if it hits a ship.
-
-# this shit is major problem
+<!-- # this shit is major problem
 
 ## just refactor the whole drag, drop and change orientation thing
 
@@ -105,7 +103,7 @@ TODO: create a better algorithm to set ship randomly
 
 - also the changeOrientation onClick function is not working after one game
 
-- consider to just overhaul the resetfuntion
+- consider to just overhaul the resetfuntion -->
 
 <!-- # BUG on changeOrientation
 
@@ -123,18 +121,22 @@ TODO: create a better algorithm to set ship randomly
 - so what happned was the the evenlister doubled up so when i rotate and drag the event cancels out
 - maybe just remove the evenlistner before calling listner function.
 
-# TODO
-
-- create a default fleet position on the and scrap the random on first display.
-
-# TODO
+<!-- # TODO -->
 
 <!-- - find a way how to produce a dragover cluster. -->
 <!-- - this will make the removal of classList lighter because we don't need to loop x100 to remove dragover and dragoverred hgihlight. -->
 <!-- - maybe idk. -->
 
-- fix logic if using drag ship out of bound make it so that it goes to the closest valid cell.
+<!-- - fix logic if using drag ship out of bound make it so that it goes to the closest valid cell. -->
 
-# Bug
+# BUG
 
-- when a ship in sunk the buffer if not showoing
+- make algorithm that allows computer to pick adjacent cell if it hits a ship.
+
+# TODO on deafult
+
+- create a default fleet position on the and scrap the random on first display.
+
+# TODO on reset()
+
+- after setting all the ships show the right screen

@@ -1,4 +1,4 @@
-import { Gameboard } from "../classes/board";
+import Gameboard from "../classes/board";
 import Ship from "../classes/ship";
 import GridCell from "../classes/cell";
 import { isValidCoor, isBufferCluster, getCoorAdjacentList } from "../utils/fn";

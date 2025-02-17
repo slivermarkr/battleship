@@ -94,6 +94,7 @@ export default class UI {
   }
 
   static removeGridHL(coordinates, hlName, table) {
+    if (!coordinates) return;
     for (const c of coordinates) {
       const cellElement = table.querySelector(`.grid[data-coordinate="${c}"]`);
       cellElement.classList.remove(hlName);

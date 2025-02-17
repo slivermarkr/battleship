@@ -1,4 +1,4 @@
-import { Gameboard } from "./board.js";
+import Gameboard from "./board.js";
 import {
   generateRandomCluster,
   getRandomOrientation,
@@ -7,6 +7,7 @@ import {
   getCoorAdjacentList,
   isCellClearForOccupation,
   generateRandomCoordinates,
+  showNewCluster,
 } from "../utils/fn.js";
 
 export class Player {
@@ -87,6 +88,7 @@ export class Computer extends Player {
 }
 const com = new Computer({});
 
-const res = generateRandomCluster({ size: 3 }, com.board);
-// const res = isCellClearForOccupation("A,11", com.board);
+// const res = generateRandomCluster({ size: 3 }, com.board);
+const res = showNewCluster(["J,10"], { size: 3, orientation: "v" }, com.board);
 console.log(res);
+// const res = isCellClearForOccupation("A,11", com.board);

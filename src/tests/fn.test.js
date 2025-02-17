@@ -14,7 +14,7 @@ import {
   isCellClearForOccupation,
 } from "../utils/fn";
 
-import { Gameboard } from "../classes/board.js";
+import Gameboard from "../classes/board.js";
 
 describe("generateRandomNumber", function () {
   test("generateRandomNumber should not be > 10", () => {
@@ -180,19 +180,33 @@ describe("#isCellClearForOccupation", function () {
 });
 
 describe("#showNewCluster", function () {
-  const board = new Gameboard({ name: "You", dimension: 10 });
-  const coor = ["A,5"];
-  const ship = {
-    size: 3,
-    orientation: "h",
-  };
+  it("showNewcluster calculates the normal dropzone", () => {
+    const board = new Gameboard({ name: "You", dimension: 10 });
+    const coor = ["A,5"];
+    const ship = {
+      size: 3,
+      orientation: "h",
+    };
 
-  const output = {
-    result: true,
-    newCluster: ["A,5", "A,6", "A,7"],
-  };
+    const output = {
+      result: true,
+      newCluster: ["A,5", "A,6", "A,7"],
+    };
+    expect(showNewCluster(coor, ship, board)).toEqual(output);
+  });
 
-  it("showNewcluster calculates the dropzone", () => {
+  it("showNewcluster calculates the dropzone overflow", () => {
+    const board = new Gameboard({ name: "You", dimension: 10 });
+    const coor = ["J,10"];
+    const ship = {
+      size: 3,
+      orientation: "h",
+    };
+
+    const output = {
+      result: true,
+      newCluster: ["J,8", "J,9", "J,10"],
+    };
     expect(showNewCluster(coor, ship, board)).toEqual(output);
   });
 });

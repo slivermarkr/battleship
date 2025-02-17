@@ -16,7 +16,7 @@ const shipArrayInput = [
   { type: 4, instances: 1 },
 ];
 
-export class Gameboard {
+export default class Gameboard {
   constructor({ name, dimension }) {
     this.name = name;
     this.dimension = dimension;
@@ -172,6 +172,7 @@ export class Gameboard {
   }
 
   resetClusterOnShipOrientationChange(cluster) {
+    if (!cluster) return;
     const clusterBuffer = isBufferCluster(cluster);
 
     for (const c of cluster) {

@@ -276,3 +276,6 @@ header {
 .ship.redShip {
   border: 2px red solid;
 }
+.ship.greenShip {
+  border: 2px rgb(140, 255, 0) solid;
+}

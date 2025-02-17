@@ -97,6 +97,7 @@ export default class App {
   // }
 
   dragover(gridEl) {
+    // console.log(this.dragState.isValid);
     const coor = gridEl.dataset.coordinate;
     const coordinates = this.dragState.dragItemPreviousCluster;
     this.dragState.dragObject.orientation =
@@ -108,20 +109,17 @@ export default class App {
       this.activePlayer.board
     );
     if (newClusterResult.result) {
+      this.dragState.dragoverCluster = newClusterResult.newCluster;
+      this.dragState.isValid = true;
+
       UI.dragoverHl(
         newClusterResult.newCluster,
         this.root.querySelector(`table#${this.activePlayer.name}`)
       );
-      this.dragState.dragoverCluster = newClusterResult.newCluster;
-      this.dragState.isValid = true;
-      // console.log("DS VLIAD", this.dragState.isValid);
+      UI.updateInfor(this.root, "Dragging ship...");
     } else {
-      UI.dragoverHl(
-        coordinates,
-        this.root.querySelector(`table#${this.activePlayer.name}`)
-      );
+      UI.updateInfor(this.root, "You can't place ship in a buffer cell.");
       this.dragState.dragoverCluster = coordinates;
-
       this.dragState.isValid = false;
     }
 
@@ -150,12 +148,23 @@ export default class App {
         "dragover",
         this.root.querySelector(`table#${this.activePlayer.name}`)
       );
+      UI.updateInfor(this.root, "Ship placed successfully!");
       console.log(
         `Set ${this.dragState.dragObject.size} to ${this.dragState.dragoverCluster}`
       );
+
+      if (
+        this.controller.isResetMode &&
+        this.activePlayer.board.isFleetAllSet()
+      ) {
+        console.log("SHOW RIGHT ARENA");
+        UI.showTheRightSideArenaWhenShipAllSet(this.root);
+        this.controller.isResetMode = false;
+      }
       return;
+    } else {
+      this.dragState.isValid = false;
     }
-    this.dragState.isValid = false;
     // console.log(`You dropped ${shipObj} in ${coor}`);
   }
 
@@ -166,6 +175,7 @@ export default class App {
         e.target.classList.contains("grid") &&
         e.target.closest("table").id === this.activePlayer.name
       ) {
+        // console.log("ondroplistner", this.dragState.isValid);
         this.drop(e.target);
       }
     });
@@ -233,12 +243,12 @@ export default class App {
       );
     }
 
+    UI.showShipOnDragEnd(ship);
     UI.removeGridHL(
       this.dragState.dragItemPreviousCluster,
       "dragover",
       this.root.querySelector(`table#${this.activePlayer.name}`)
     );
-    UI.showShipOnDragEnd(ship);
   }
 
   #drag;
@@ -551,6 +561,7 @@ export default class App {
       this.dragState.dragItemEl = undefined;
       this.dragState.dragObject = undefined;
       this.dragState.dragItemPreviousCluster = undefined;
+      UI.showOccupiedGrid(this.root, this.activePlayer);
       // UI.isReadyForBatlle(this.root);
     }
   }

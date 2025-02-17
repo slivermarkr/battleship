@@ -1,5 +1,4 @@
 import GridCell from "../classes/cell";
-import { Gameboard } from "../classes/board";
 
 const output = {
   coor: "A,1",

@@ -1,3 +1,5 @@
+import Gameboard from "../classes/board.js";
+
 const DIMENSION = 10;
 
 export function generateRandomNum() {
@@ -196,12 +198,13 @@ export function calculatePossibleCluster(
 export function showNewCluster(
   coordinates,
   { orientation, size },
-  { gridMap, occupied }
+  { gridMap, occupied, dimension }
 ) {
   const coor = coordinates[0];
   const coorInt = convertCoorToInt(coor); // if given "A,1" return [1,1]
   let result = [];
   let nextCoor;
+  let isOverflow = false;
 
   for (let i = 0; i < size; ++i) {
     if (orientation == "h") {
@@ -212,9 +215,22 @@ export function showNewCluster(
 
     if (isValidCoor(nextCoor)) {
       result.push(nextCoor);
+    } else {
+      isOverflow = true;
+      result = [];
     }
   }
-
+  // handle overflow
+  if (isOverflow) {
+    for (let i = dimension - size; i < dimension; ++i) {
+      if (orientation == "h") {
+        nextCoor = `${String.fromCharCode(coorInt[0] + 64)},${i + 1}`;
+      } else if (orientation == "v") {
+        nextCoor = `${String.fromCharCode(i + 1 + 64)},${coorInt[1]}`;
+      }
+      result.push(nextCoor);
+    }
+  }
   const isOppositeClusterValid = result.every((coor) =>
     isCellClearForOccupation(coor, { occupied, gridMap })
   );
