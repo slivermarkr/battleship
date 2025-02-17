@@ -1,4 +1,5 @@
 import {
+  showNewCluster,
   calculatePossibleCluster,
   getCoorAdjacentCorner,
   generateRandomNum,
@@ -161,11 +162,11 @@ describe("#calculatePossibleCluster", function () {
   // calculate possible cluster
   // if the e.target.coordinate is "A,1" and the orientation is "h" function should return ["A,2", "A,3"]
   const result = calculatePossibleCluster(
-    "A,1",
+    ["A,1"],
     { size: shipSize, orientation },
     board
   );
-  expect(result).toEqual(expect.arrayContaining(["A,2", "A,3"]));
+  expect(result.cluster).toEqual(expect.arrayContaining(["A,2", "A,3"]));
 });
 
 describe("#isCellClearForOccupation", function () {
@@ -175,5 +176,23 @@ describe("#isCellClearForOccupation", function () {
   });
   it("invalid cell", () => {
     expect(isCellClearForOccupation("A,11", board)).toBe(false);
+  });
+});
+
+describe("#showNewCluster", function () {
+  const board = new Gameboard({ name: "You", dimension: 10 });
+  const coor = ["A,5"];
+  const ship = {
+    size: 3,
+    orientation: "h",
+  };
+
+  const output = {
+    result: true,
+    newCluster: ["A,5", "A,6", "A,7"],
+  };
+
+  it("showNewcluster calculates the dropzone", () => {
+    expect(showNewCluster(coor, ship, board)).toEqual(output);
   });
 });

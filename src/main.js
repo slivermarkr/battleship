@@ -6,6 +6,7 @@ import {
   getCoorAdjacentList,
   isBufferCluster,
   isCellClearForOccupation,
+  showNewCluster,
 } from "./utils/fn.js";
 import UI from "./ui/ui.js";
 
@@ -29,6 +30,8 @@ export default class App {
       dragObject: undefined,
       dropItemEl: undefined,
       dragItemPreviousCluster: undefined,
+      dragoverCluster: undefined,
+      dragItemPreviousOrientation: undefined,
     };
 
     this.activePlayer = undefined;
@@ -39,6 +42,8 @@ export default class App {
     this.onGridListener();
     this.onLinkListener();
     this.onShipClickListener();
+    this.dragEventListener();
+    this.dropEventListener();
     this.onGodMode();
   }
 
@@ -49,7 +54,7 @@ export default class App {
 
     this.controller.isReady = false;
     this.controller.isResetMode = false;
-    this.controller.comboCount = false;
+    this.controller.comboCount = 0;
     this.controller.isGameOver = false;
 
     this.playerTwo = new Computer({});
@@ -57,11 +62,185 @@ export default class App {
     this.displayArena();
     // randomly append ship
     this.appendShipElementToGridEl();
-    // this.showOccupiedGrid(this.playerOne);
-    // this.onClickListener();
-    // this.shipDragEventListener(this.playerOne);
-    // this.gridDragDropEventListener();
-    // this.setBufferClasslist(this.activePlayer.board);
+  }
+
+  setShipOnDrop(ship, cluster, activePlayer, shipEl) {
+    const table = this.root.querySelector(`table#${activePlayer.name}`);
+    const cellElement = table.querySelector(
+      `.grid[data-coordinate='${cluster[0]}']`
+    );
+
+    activePlayer.board.setShip(ship, cluster);
+    cellElement.appendChild(shipEl);
+
+    UI.bufferGridHl(this.root, activePlayer.board.buffers, activePlayer.name);
+    // UI.showOccupiedGrid(this.root, activePlayer);
+  }
+
+  #dragleave;
+  dragleave(gridEl) {
+    console.log(this.dragState.dragoverCluster);
+    UI.removeGridHL(
+      this.dragState.dragoverCluster,
+      "dragover",
+      this.root.querySelector(`table#${this.activePlayer.name}`)
+    );
+    UI.removeGridHL(
+      this.dragState.dragoverCluster,
+      "dragoverred",
+      this.root.querySelector(`table#${this.activePlayer.name}`)
+    );
+  }
+
+  // dragover(gridEl) {
+
+  // }
+
+  dragover(gridEl) {
+    const coor = gridEl.dataset.coordinate;
+    const coordinates = this.dragState.dragItemPreviousCluster;
+    this.dragState.dragObject.orientation =
+      this.dragState.dragItemPreviousOrientation;
+
+    const newClusterResult = showNewCluster(
+      [coor],
+      this.dragState.dragObject,
+      this.activePlayer.board
+    );
+    if (newClusterResult.result) {
+      UI.dragoverHl(
+        newClusterResult.newCluster,
+        this.root.querySelector(`table#${this.activePlayer.name}`)
+      );
+      this.dragState.dragoverCluster = newClusterResult.newCluster;
+      this.dragState.isValid = true;
+    } else {
+      UI.dragoverHl(
+        coordinates,
+        this.root.querySelector(`table#${this.activePlayer.name}`)
+      );
+      this.dragState.dragoverCluster = coordinates;
+
+      this.dragState.isValid = false;
+    }
+
+    // console.log(`You are dragging over in ${coor}`);
+  }
+
+  drop(gridEl) {
+    if (!this.dragState.isValid) return;
+    console.log("DROPPEd");
+    const coor = gridEl.dataset.coordinate;
+    const cell = this.activePlayer.board.gridMap.get(coor);
+
+    if (!cell.isOccupied && !cell.isBuffer()) {
+      this.dragState.isValid = true;
+
+      this.setShipOnDrop(
+        this.dragState.dragObject,
+        this.dragState.dragoverCluster,
+        this.activePlayer,
+        this.dragState.dragItemEl
+      );
+
+      UI.removeGridHL(
+        this.dragState.dragoverCluster,
+        "dragover",
+        this.root.querySelector(`table#${this.activePlayer.name}`)
+      );
+      console.log(
+        `Set ${this.dragState.dragObject.size} to ${this.dragState.dragoverCluster}`
+      );
+      return;
+    }
+    this.dragState.isValid = false;
+    // console.log(`You dropped ${shipObj} in ${coor}`);
+  }
+
+  #drop;
+  dropEventListener() {
+    this.root.addEventListener("drop", (e) => {
+      if (
+        e.target.classList.contains("grid") &&
+        e.target.closest("table").id === this.activePlayer.name
+      ) {
+        this.drop(e.target);
+      }
+    });
+
+    this.root.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      if (
+        e.target.classList.contains("grid") &&
+        e.target.closest("table").id === this.activePlayer.name
+      ) {
+        this.dragover(e.target);
+      }
+    });
+
+    this.root.addEventListener("dragleave", (e) => {
+      if (
+        e.target.classList.contains("grid") &&
+        e.target.closest("table").id === this.activePlayer.name
+      ) {
+        this.dragleave(e.target);
+      }
+    });
+  }
+
+  dragStart(ship) {
+    this.dragState.isValid = false;
+    this.dragState.dragItemEl = ship;
+    UI.hideShipOnDragStart(ship);
+
+    const shipObj = this.activePlayer.board.getCorrespondingShip({
+      index: this.dragState.dragItemEl.dataset.index,
+      size: this.dragState.dragItemEl.dataset.size,
+    });
+
+    this.dragState.dragItemPreviousCluster = shipObj.cluster;
+    this.dragState.dragItemPreviousOrientation = shipObj.orientation;
+    this.dragState.dragObject = shipObj;
+
+    this.activePlayer.board.resetClusterOnShipOrientationChange(
+      shipObj.cluster
+    );
+
+    shipObj.reset();
+    UI.bufferGridHl(
+      this.root,
+      this.activePlayer.board.buffers,
+      this.activePlayer.name
+    );
+
+    UI.showOccupiedGrid(this.root, this.activePlayer);
+  }
+
+  dragEnd(ship) {
+    console.log("dragend", this.dragState.isValid);
+    if (!this.dragState.isValid) {
+      this.setShipOnDrop(
+        this.dragState.dragObject,
+        this.dragState.dragItemPreviousCluster,
+        this.activePlayer,
+        this.dragState.dragItemEl
+      );
+    }
+    UI.showShipOnDragEnd(ship);
+  }
+
+  #drag;
+  dragEventListener() {
+    this.root.addEventListener("dragstart", (e) => {
+      if (e.target.classList.contains("ship")) {
+        this.dragStart(e.target);
+      }
+    });
+    this.root.addEventListener("dragend", (e) => {
+      if (e.target.classList.contains("ship")) {
+        this.dragEnd(e.target);
+      }
+    });
   }
 
   #orientation;
@@ -87,14 +266,16 @@ export default class App {
     this.activePlayer.board.setShip(shipObj, newCluster.cluster);
 
     // UI.changeShipOrientation(ship);
+    const printRedShip = newCluster.cluster === shipObjClusterCopy;
     UI.changeShipOrientation(
       this.root,
       newCluster.cluster[0],
       ship,
       shipObj.orientation,
-      this.activePlayer.name
+      this.activePlayer.name,
+      printRedShip
     );
-    UI.showOccupiedGrid(this.root, this.activePlayer);
+    // UI.showOccupiedGrid(this.root, this.activePlayer);
     UI.bufferGridHl(
       this.root,
       this.activePlayer.board.buffers,
@@ -500,7 +681,7 @@ export default class App {
       );
       cellEl.appendChild(shipElement);
     }
-    UI.showOccupiedGrid(this.root, this.playerOne);
+    // UI.showOccupiedGrid(this.root, this.playerOne);
     UI.bufferGridHl(
       this.root,
       this.playerOne.board.buffers,
@@ -616,8 +797,6 @@ export default class App {
   }
 
   onGridClick(cell, activePlayer) {
-    const c = activePlayer.board.gridMap.get(cell.dataset.coordinate);
-    console.log(c);
     if (
       !this.controller.isReady ||
       activePlayer.name === cell.closest("table").id ||
@@ -687,6 +866,12 @@ export default class App {
   onRandomClick() {
     UI.updateInfor(this.root, `Ship ramdomized!`);
     this.appendShipElementToGridEl();
+
+    UI.removeGridHL(
+      generateGridArray(10),
+      "occupied",
+      this.root.querySelector(`table#${this.activePlayer.name}`)
+    );
 
     // looping through the board.shiplist to get the ship.cluster so appopriate grid buffer
     // this.setBufferClasslist(this.playerOne.board);
@@ -767,6 +952,7 @@ export default class App {
       }, 500);
     });
   }
+
   displayArena() {
     const lArena = this.root.querySelector(".lArena");
     const rArena = this.root.querySelector(".rArena");

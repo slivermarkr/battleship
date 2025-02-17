@@ -272,3 +272,7 @@ main,
 header {
   padding-left: 2rem;
 }
+
+.ship.redShip {
+  border: 2px red solid;
+}

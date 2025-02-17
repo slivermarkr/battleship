@@ -1,11 +1,17 @@
 import { generateGridArray, isBufferCluster } from "../utils/fn.js";
 
 export default class UI {
+  static hideShipOnDragStart(ship) {
+    ship.classList.toggle("invi");
+  }
+
+  static showShipOnDragEnd(ship) {
+    ship.classList.toggle("invi");
+  }
   static bufferGridHl(root, cluster, table) {
     const tableEl = root.querySelector(`table#${table}`);
     UI.removeGridHL(generateGridArray(10), "buffer", tableEl);
 
-    console.log(cluster);
     for (let i = 0; i < cluster.length; ++i) {
       const gridEl = tableEl.querySelector(
         `.grid[data-coordinate="${cluster[i].coor}"]`
@@ -58,11 +64,27 @@ export default class UI {
     root.querySelectorAll(".grid").forEach((grid) => (grid.style.zIndex = 100));
   }
 
-  static changeShipOrientation(root, gridElCoor, shipEl, orientation, name) {
+  static changeShipOrientation(
+    root,
+    gridElCoor,
+    shipEl,
+    orientation,
+    name,
+    isShipRed
+  ) {
     const table = root.querySelector(`table#${name}`);
     const grid = table.querySelector(`.grid[data-coordinate="${gridElCoor}"]`);
     shipEl.setAttribute("data-orientation", orientation);
     grid.appendChild(shipEl);
+    if (isShipRed) {
+      UI.updateInfor(root, "Collision detected!");
+      shipEl.classList.add("redShip");
+      setTimeout(() => {
+        shipEl.classList.remove("redShip");
+      }, 200);
+    } else {
+      UI.updateInfor(root, "Changed orientation successfully.");
+    }
   }
 
   static showTheRightSideArenaWhenShipAllSet(root) {
@@ -72,7 +94,6 @@ export default class UI {
   }
 
   static removeGridHL(coordinates, hlName, table) {
-    // console.log(table);
     for (const c of coordinates) {
       const cellElement = table.querySelector(`.grid[data-coordinate="${c}"]`);
       cellElement.classList.remove(hlName);
@@ -105,9 +126,7 @@ export default class UI {
     }
   }
 
-  static onDragStart(ship) {
-    // console.log("You start dragging " + ship);
-  }
+  static onDragStart(ship) {}
 
   static updateInfor(root, message) {
     root.querySelector(".info").textContent = message;
@@ -136,7 +155,6 @@ export default class UI {
     cell.classList.add("hit");
     const zContainer = cell.parentElement.querySelector(".z");
     zContainer.classList.add("showXmark");
-    // console.log(zContainer);
     UI.showBuffer(adjacentCorner, table);
   }
 
@@ -144,7 +162,6 @@ export default class UI {
     const cell = table.querySelector(`.grid[data-coordinate="${coor}"]`);
     cell.classList.add("miss");
     const zContainer = cell.parentElement.querySelector(".z");
-    // console.log(zContainer);
     zContainer.classList.add("missDot");
   }
 

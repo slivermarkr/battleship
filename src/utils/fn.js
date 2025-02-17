@@ -53,8 +53,6 @@ export function getCoorAdjacentCorner(coor) {
     });
 }
 
-// console.log(getCoorAdjacentCorner("A,1"));
-
 export function getCoorAdjacentList(coor) {
   if (!isValidCoor(coor)) throw new Error(`"${coor}" is NOT VALID COORDINATE`);
   const [row, col] = convertCoorToInt(coor);
@@ -90,7 +88,6 @@ export function isBufferCluster(coordinates) {
   let result = [];
   for (let i = 0; i < coordinates.length; ++i) {
     const adjList = getCoorAdjacentList(coordinates[i]);
-    // console.log(`adjList of ${coordinates[i]}`, adjList);
     result = result.concat(adjList);
   }
 
@@ -115,7 +112,6 @@ export function isCellClearForOccupation(coor, { occupied, gridMap }) {
 
   const cell = gridMap.get(coor);
 
-  console.log("clear?", cell);
   return !occupied.includes(coor) && !cell.isBuffer(); // returns true if cell.isBuffer() = false && !occupied.includes(coor)
 }
 
@@ -171,9 +167,7 @@ export function calculatePossibleCluster(
   let result = [];
   let nextCoor;
   let newOrientation;
-  let isOverFlow = false;
 
-  // console.log(gridMap.get("A,1"));
   // if h then increase the right side
   for (let i = 1; i < size; ++i) {
     if (orientation == "v") {
@@ -186,23 +180,7 @@ export function calculatePossibleCluster(
       result.push(nextCoor);
     }
   }
-
-  // if (isOverFlow) {
-  //   //we need a new starting point dimension - size
-  //   result = [];
-
-  //   for (let i = dimension - size + 1; i <= dimension; ++i) {
-  //     if (orientation == "v") {
-  //       nextCoor = `${String.fromCharCode(coorInt[0] + 64)},${i}`;
-  //     } else if (orientation == "h") {
-  //       nextCoor = `${String.fromCharCode(64 + i)},${coorInt[1]}`;
-  //     }
-
-  //     result.push(nextCoor);
-  //   }
-  // } else {
   result.unshift(coor);
-  // }
 
   const isOppositeClusterValid = result.every((coor) =>
     isCellClearForOccupation(coor, { occupied, gridMap })
@@ -213,4 +191,35 @@ export function calculatePossibleCluster(
   return isOppositeClusterValid && result.length === size
     ? { cluster: result, orientation: newOrientation }
     : { cluster: coordinates, orientation };
+}
+
+export function showNewCluster(
+  coordinates,
+  { orientation, size },
+  { gridMap, occupied }
+) {
+  const coor = coordinates[0];
+  const coorInt = convertCoorToInt(coor); // if given "A,1" return [1,1]
+  let result = [];
+  let nextCoor;
+
+  for (let i = 0; i < size; ++i) {
+    if (orientation == "h") {
+      nextCoor = `${String.fromCharCode(coorInt[0] + 64)},${coorInt[1] + i}`;
+    } else if (orientation == "v") {
+      nextCoor = `${String.fromCharCode(coorInt[0] + i + 64)},${coorInt[1]}`;
+    }
+
+    if (isValidCoor(nextCoor)) {
+      result.push(nextCoor);
+    }
+  }
+
+  const isOppositeClusterValid = result.every((coor) =>
+    isCellClearForOccupation(coor, { occupied, gridMap })
+  );
+
+  return isOppositeClusterValid
+    ? { newCluster: result, result: true }
+    : { newCluster: coordinates, result: false };
 }

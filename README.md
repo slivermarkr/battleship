@@ -71,18 +71,11 @@ TODO: add some UI
 
 - dialog when choosing opponent
 
-- when the game is over check who wins and dynamically change the dialog to green if user wins and red if lose.
-
 <!-- - add some indicator for when the coor is not valid -->
 
 TODO: create a better algorithm to set ship randomly
 
 - there are times that the program goes into stackoveflow
-
-# TODO: UI
-
-- when ship is sunk remove the ship element
-- also on actual gameplay it might help to lower the opacity of the attackers board to help indicate who is whos board to attack.
 
 <!-- - remove the ship z-index so grids are clickable
 - add some style depending wether it's a hit or a miss -->
@@ -114,16 +107,30 @@ TODO: create a better algorithm to set ship randomly
 
 - consider to just overhaul the resetfuntion
 
-# BUG on changeOrientation
+<!-- # BUG on changeOrientation
 
 - maybe create a separate checkMethod onClick
-- when you click on a ship and it's possibleCluster if a buffer. it decrements the bufferCount so when the ship is clicked multiple times is sees the cell as valid.
+- when you click on a ship and it's possibleCluster if a buffer. it decrements the bufferCount so when the ship is clicked multiple times is sees the cell as valid. -->
 
 # ON Refactor branch
 
-- implement the change orientation
+<!-- - implement the change orientation -->
+
 - find other ways to reset the buffer depending on the the event
 
 # Found the Bug
 
 - so what happned was the the evenlister doubled up so when i rotate and drag the event cancels out
+- maybe just remove the evenlistner before calling listner function.
+
+# TODO
+
+- create a default fleet position on the and scrap the random on first display.
+
+# TODO
+
+<!-- - find a way how to produce a dragover cluster. -->
+<!-- - this will make the removal of classList lighter because we don't need to loop x100 to remove dragover and dragoverred hgihlight. -->
+<!-- - maybe idk. -->
+
+- fix logic if using drag ship out of bound make it so that it goes to the closest valid cell.

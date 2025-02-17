@@ -64,7 +64,6 @@ export class Gameboard {
   }
 
   setShip(shipObj, coordinates) {
-    console.log(shipObj);
     if (shipObj.isSet) throw new Error("SHIP ALREADY SET");
     if (shipObj.size !== coordinates.length)
       throw new Error("shipObj.size !== coordinates.length");
@@ -95,8 +94,6 @@ export class Gameboard {
       this.bufferMultiple = this.getBufferWithMoreThanOneCount();
       this.buffers = this.getBufferCells();
     }
-    // console.log("buffer with muptiple ships", this.bufferMultiple);
-    // console.log("BUFFER on board.js", bufferCluster);
   }
 
   getOccupiedCells() {
@@ -122,7 +119,6 @@ export class Gameboard {
     for (const ship of this.shipList) {
       ship.reset();
     }
-    console.log("THIS IS THE SHIP LIST", this.shipList);
 
     this.bufferMultiple = [];
   }
@@ -181,7 +177,6 @@ export class Gameboard {
     for (const c of cluster) {
       const cell = this.gridMap.get(c);
       cell.reset();
-      console.log("reset", cell);
     }
     //determine if buffer serves more than one ship. If not reset it else do not reset.
     for (const c of clusterBuffer) {
