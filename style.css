@@ -5,7 +5,7 @@ body {
 }
 
 :root {
-  --size: 2rem;
+  --size: 2.3rem;
 }
 table {
   border-collapse: collapse;
@@ -13,6 +13,9 @@ table {
   padding: 0;
 }
 
+table p {
+  margin: 0.5rem;
+}
 td,
 tr {
   padding: 0;
@@ -33,7 +36,7 @@ table {
   width: var(--size);
   height: var(--size);
   position: relative;
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(255, 250, 250);
 }
 
 .cell {
@@ -85,7 +88,7 @@ table {
 .linkGrp {
   display: flex;
   gap: 1.5rem;
-  font-size: 13px;
+  font-size: 15px;
 }
 /* .rightSide {
   display: none;
@@ -145,11 +148,13 @@ table {
 .ship[data-orientation="h"] {
   top: -0.3px;
 }
+
 .fleetSetupDiv {
+  padding: 1rem;
   display: grid;
   grid-template-columns: 1fr 1fr;
   border: 2px solid black;
-  min-width: 18rem;
+  min-width: 24rem;
   min-height: 18rem;
   margin-top: 2rem;
 }
@@ -167,11 +172,11 @@ table {
 } */
 
 .miss {
-  background-color: rgba(92, 92, 92, 0.608);
+  background-color: rgb(223, 216, 216);
 }
 
 .revealed {
-  background-color: rgba(92, 92, 92, 0.608);
+  background-color: rgb(223, 216, 216);
 }
 
 .buffer {
@@ -183,11 +188,11 @@ table {
 }
 
 .dragover {
-  border: rgb(176, 255, 4) 3px solid;
+  border: rgb(163, 255, 70) 3px solid;
 }
 
 .invi {
-  z-index: -1;
+  z-index: -50;
 }
 
 .dragoverred {
@@ -198,38 +203,35 @@ table {
   z-index: -1;
 }
 
-.showXmark {
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 1rem;
-  z-index: 10;
-  position: relative;
-  width: 0.5rem;
-  height: 0.5rem;
-  background-color: black;
-}
-
 .grid {
   position: relative;
 }
+
+.showXmark {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 10;
+}
+
+.showXmark::before,
 .showXmark::after {
-  content: "|";
-  color: red;
-  font-size: 2.5rem;
+  content: "";
   position: absolute;
-  transform: rotate(45deg);
-  bottom: 0.8rem;
-  left: 0.7rem;
+  top: -95%;
+  right: -21px;
+  width: 3px; /* Thickness of the lines */
+  height: 250%; /* Size of the 'X' */
+  background-color: red;
+  transform-origin: center;
+}
+
+.showXmark::after {
+  transform: translate(-50%, -50%) rotate(45deg);
 }
 
 .showXmark::before {
-  content: "|";
-  color: red;
-  font-size: 2.5rem;
-  bottom: 0.8rem;
-  left: 0.4rem;
-  position: absolute;
-  transform: rotate(-45deg);
+  transform: translate(-50%, -50%) rotate(-45deg);
 }
 
 .isSunk {
@@ -259,18 +261,30 @@ table {
 .blur {
   opacity: 0.5;
 }
-
 header {
-  font-size: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-height: 2rem;
+}
+
+header h1 {
+  font-size: 1.5rem;
   cursor: pointer;
 }
-header:hover {
+
+header h1:hover {
   color: hotpink;
 }
 
+img {
+  width: 2rem;
+  height: 2rem;
+}
 main,
 header {
   padding-left: 2rem;
+  padding-right: 2rem;
 }
 
 .ship.redShip {

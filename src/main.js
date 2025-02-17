@@ -2,10 +2,7 @@ import { Player, Computer } from "./classes/player.js";
 import {
   calculatePossibleCluster,
   generateGridArray,
-  getCoorAdjacentCorner,
-  getCoorAdjacentList,
   isBufferCluster,
-  isCellClearForOccupation,
   showNewCluster,
 } from "./utils/fn.js";
 import UI from "./ui/ui.js";
@@ -72,22 +69,13 @@ export default class App {
 
     activePlayer.board.setShip(ship, cluster);
     cellElement.appendChild(shipEl);
-
-    // UI.bufferGridHl(this.root, activePlayer.board.buffers, activePlayer.name);
-    // UI.showOccupiedGrid(this.root, activePlayer);
   }
 
   #dragleave;
   dragleave(gridEl) {
-    console.log(this.dragState.dragoverCluster);
     UI.removeGridHL(
       this.dragState.dragoverCluster,
       "dragover",
-      this.root.querySelector(`table#${this.activePlayer.name}`)
-    );
-    UI.removeGridHL(
-      this.dragState.dragoverCluster,
-      "dragoverred",
       this.root.querySelector(`table#${this.activePlayer.name}`)
     );
   }
@@ -97,7 +85,6 @@ export default class App {
   // }
 
   dragover(gridEl) {
-    // console.log(this.dragState.isValid);
     const coor = gridEl.dataset.coordinate;
     const coordinates = this.dragState.dragItemPreviousCluster;
     this.dragState.dragObject.orientation =
@@ -116,20 +103,17 @@ export default class App {
         newClusterResult.newCluster,
         this.root.querySelector(`table#${this.activePlayer.name}`)
       );
+
       UI.updateInfor(this.root, "Dragging ship...");
     } else {
       UI.updateInfor(this.root, "You can't place ship in a buffer cell.");
       this.dragState.dragoverCluster = coordinates;
       this.dragState.isValid = false;
     }
-
-    // console.log(`You are dragging over in ${coor}`);
   }
 
   drop(gridEl) {
-    console.log("ONDROP", this.dragState.isValid);
     if (!this.dragState.isValid) return;
-    console.log("DROPPEd");
     const coor = gridEl.dataset.coordinate;
     const cell = this.activePlayer.board.gridMap.get(coor);
 
@@ -149,23 +133,19 @@ export default class App {
         this.root.querySelector(`table#${this.activePlayer.name}`)
       );
       UI.updateInfor(this.root, "Ship placed successfully!");
-      console.log(
-        `Set ${this.dragState.dragObject.size} to ${this.dragState.dragoverCluster}`
-      );
 
       if (
         this.controller.isResetMode &&
         this.activePlayer.board.isFleetAllSet()
       ) {
-        console.log("SHOW RIGHT ARENA");
         UI.showTheRightSideArenaWhenShipAllSet(this.root);
+        UI.updateInfor(this.root, "Click 'Ready' whenever you are.");
         this.controller.isResetMode = false;
       }
       return;
     } else {
       this.dragState.isValid = false;
     }
-    // console.log(`You dropped ${shipObj} in ${coor}`);
   }
 
   #drop;
@@ -175,7 +155,6 @@ export default class App {
         e.target.classList.contains("grid") &&
         e.target.closest("table").id === this.activePlayer.name
       ) {
-        // console.log("ondroplistner", this.dragState.isValid);
         this.drop(e.target);
       }
     });
@@ -223,17 +202,9 @@ export default class App {
     );
 
     shipObj.reset();
-    // UI.bufferGridHl(
-    //   this.root,
-    //   this.activePlayer.board.buffers,
-    //   this.activePlayer.name
-    // );
-
-    // UI.showOccupiedGrid(this.root, this.activePlayer);
   }
 
   dragEnd(ship) {
-    console.log("dragend", this.dragState.isValid);
     if (!this.dragState.isValid) {
       this.setShipOnDrop(
         this.dragState.dragObject,
@@ -281,7 +252,6 @@ export default class App {
       shipObj,
       this.activePlayer.board
     );
-    // console.log("possible cluster", newCluster.cluster);
 
     shipObj.reset();
     shipObj.orientation = newCluster.orientation;
@@ -297,26 +267,16 @@ export default class App {
       this.activePlayer.name,
       printRedShip
     );
-    // UI.showOccupiedGrid(this.root, this.activePlayer);
-    // UI.bufferGridHl(
-    //   this.root,
-    //   this.activePlayer.board.buffers,
-    //   this.activePlayer.name
-    // );
-    // console.log("this is the cluster we gonna go to", pcluster);
-    // shipObj.reset();
   }
 
   #shipClickListener;
   onShipClickListener() {
     this.root.addEventListener("click", (e) => {
-      const table = this.root.querySelector(`table#${this.activePlayer.name}`);
       if (
         e.target.classList.contains("ship") &&
         e.target.closest("table") !== null &&
         !this.controller.isReady
       ) {
-        console.log("SHIP CLIECK");
         this.changeShipOrientation(e.target);
       }
     });
@@ -344,13 +304,6 @@ export default class App {
       );
       cellEl.appendChild(shipElement);
     }
-    // UI.showOccupiedGrid(this.root, this.playerOne);
-    // UI.bufferGridHl(
-    //   this.root,
-    //   this.playerOne.board.buffers,
-    //   this.playerOne.name
-    // );
-    // UI.setBufferClasslist(this.root, this.playerOne.board);
   }
 
   playerToReceiveAttack(current) {
@@ -415,9 +368,11 @@ export default class App {
           nextPlayer,
           this.root.querySelector(`table#${nextPlayer.name}`)
         );
+
         UI.addBlurTable(this.root, this.activePlayer.name);
       }, 800);
     }
+
     UI.addBlurTable(this.root, this.activePlayer.name);
     if (cell.isOccupied) {
       const ship = cell.shipData;
@@ -504,16 +459,6 @@ export default class App {
     );
 
     UI.updateInfor(this.root, `Setting ship...`);
-    // UI.removeGridHL(
-    //   generateGridArray(10),
-    //   "buffer",
-    //   this.root.querySelector(`table#${this.playerOne.name}`)
-    // );
-    // UI.removeGridHL(
-    //   generateGridArray(10),
-    //   "occupied",
-    //   this.root.querySelector(`table#${this.playerOne.name}`)
-    // );
 
     this.root.querySelector(".rightSide").classList.add("hidden");
     this.root.querySelector(".linkGrp").classList.add("hidden");
@@ -522,8 +467,6 @@ export default class App {
     lArena.querySelectorAll(".ship").forEach((shipEl) => shipEl.remove());
 
     arena.insertBefore(fleetBox, lArena);
-    // this.shipDragEventListener(this.activePlayer);
-    // this.gridDragDropEventListener();
   }
 
   onRandomClick() {
@@ -542,12 +485,6 @@ export default class App {
 
   onChooseClick() {
     UI.showChooseModal(this.root);
-    // UI.updateInfor();
-    // UI.showRematchModal(
-    //   this.root,
-    //   "choose",
-    //   "Sorry, PvP to be implemented soon."
-    // );
   }
 
   isFleetReady(shipList) {

@@ -114,7 +114,7 @@ export default class UI {
 
   static dragoverHl(coordinates, table) {
     table
-      .querySelectorAll(".grid")
+      .querySelectorAll(".cell")
       .forEach((cell) => cell.classList.remove("dragover"));
 
     for (let i = 0; i < coordinates.length; ++i) {
