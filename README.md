@@ -134,3 +134,7 @@ TODO: create a better algorithm to set ship randomly
 <!-- - maybe idk. -->
 
 - fix logic if using drag ship out of bound make it so that it goes to the closest valid cell.
+
+# Bug
+
+- when a ship in sunk the buffer if not showoing

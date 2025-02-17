@@ -73,7 +73,7 @@ export default class App {
     activePlayer.board.setShip(ship, cluster);
     cellElement.appendChild(shipEl);
 
-    UI.bufferGridHl(this.root, activePlayer.board.buffers, activePlayer.name);
+    // UI.bufferGridHl(this.root, activePlayer.board.buffers, activePlayer.name);
     // UI.showOccupiedGrid(this.root, activePlayer);
   }
 
@@ -114,6 +114,7 @@ export default class App {
       );
       this.dragState.dragoverCluster = newClusterResult.newCluster;
       this.dragState.isValid = true;
+      // console.log("DS VLIAD", this.dragState.isValid);
     } else {
       UI.dragoverHl(
         coordinates,
@@ -128,6 +129,7 @@ export default class App {
   }
 
   drop(gridEl) {
+    console.log("ONDROP", this.dragState.isValid);
     if (!this.dragState.isValid) return;
     console.log("DROPPEd");
     const coor = gridEl.dataset.coordinate;
@@ -175,6 +177,8 @@ export default class App {
         e.target.closest("table").id === this.activePlayer.name
       ) {
         this.dragover(e.target);
+      } else {
+        this.dragState.isValid = false;
       }
     });
 
@@ -184,6 +188,8 @@ export default class App {
         e.target.closest("table").id === this.activePlayer.name
       ) {
         this.dragleave(e.target);
+      } else {
+        this.dragState.isValid = false;
       }
     });
   }
@@ -207,13 +213,13 @@ export default class App {
     );
 
     shipObj.reset();
-    UI.bufferGridHl(
-      this.root,
-      this.activePlayer.board.buffers,
-      this.activePlayer.name
-    );
+    // UI.bufferGridHl(
+    //   this.root,
+    //   this.activePlayer.board.buffers,
+    //   this.activePlayer.name
+    // );
 
-    UI.showOccupiedGrid(this.root, this.activePlayer);
+    // UI.showOccupiedGrid(this.root, this.activePlayer);
   }
 
   dragEnd(ship) {
@@ -226,6 +232,12 @@ export default class App {
         this.dragState.dragItemEl
       );
     }
+
+    UI.removeGridHL(
+      this.dragState.dragItemPreviousCluster,
+      "dragover",
+      this.root.querySelector(`table#${this.activePlayer.name}`)
+    );
     UI.showShipOnDragEnd(ship);
   }
 
@@ -276,11 +288,11 @@ export default class App {
       printRedShip
     );
     // UI.showOccupiedGrid(this.root, this.activePlayer);
-    UI.bufferGridHl(
-      this.root,
-      this.activePlayer.board.buffers,
-      this.activePlayer.name
-    );
+    // UI.bufferGridHl(
+    //   this.root,
+    //   this.activePlayer.board.buffers,
+    //   this.activePlayer.name
+    // );
     // console.log("this is the cluster we gonna go to", pcluster);
     // shipObj.reset();
   }
@@ -682,11 +694,11 @@ export default class App {
       cellEl.appendChild(shipElement);
     }
     // UI.showOccupiedGrid(this.root, this.playerOne);
-    UI.bufferGridHl(
-      this.root,
-      this.playerOne.board.buffers,
-      this.playerOne.name
-    );
+    // UI.bufferGridHl(
+    //   this.root,
+    //   this.playerOne.board.buffers,
+    //   this.playerOne.name
+    // );
     // UI.setBufferClasslist(this.root, this.playerOne.board);
   }
 
@@ -841,16 +853,16 @@ export default class App {
     );
 
     UI.updateInfor(this.root, `Setting ship...`);
-    UI.removeGridHL(
-      generateGridArray(10),
-      "buffer",
-      this.root.querySelector(`table#${this.playerOne.name}`)
-    );
-    UI.removeGridHL(
-      generateGridArray(10),
-      "occupied",
-      this.root.querySelector(`table#${this.playerOne.name}`)
-    );
+    // UI.removeGridHL(
+    //   generateGridArray(10),
+    //   "buffer",
+    //   this.root.querySelector(`table#${this.playerOne.name}`)
+    // );
+    // UI.removeGridHL(
+    //   generateGridArray(10),
+    //   "occupied",
+    //   this.root.querySelector(`table#${this.playerOne.name}`)
+    // );
 
     this.root.querySelector(".rightSide").classList.add("hidden");
     this.root.querySelector(".linkGrp").classList.add("hidden");
