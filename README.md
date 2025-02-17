@@ -1,6 +1,6 @@
 # Battleship
 
-- Try it here!:
+- Try it here!: https://slivermarkr.github.io/battleship/#
 
 ## Test Driven Development Implementation
 
