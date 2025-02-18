@@ -31,6 +31,14 @@ export default class App {
       dragItemPreviousOrientation: undefined,
     };
 
+    this.actions = {
+      resetBtn: () => this.onResetClick(),
+      randomBtn: () => this.onRandomClick(),
+      readyBtn: () => this.onReadyClick(),
+      chooseBtn: () => this.onChooseClick(),
+      rematchBtn: () => this.onRematchClick(),
+    };
+
     this.activePlayer = undefined;
 
     this.root.insertAdjacentHTML("afterbegin", this.initHTML());
@@ -71,7 +79,6 @@ export default class App {
     cellElement.appendChild(shipEl);
   }
 
-  #dragleave;
   dragleave(gridEl) {
     UI.removeGridHL(
       this.dragState.dragoverCluster,
@@ -148,7 +155,6 @@ export default class App {
     }
   }
 
-  #drop;
   dropEventListener() {
     this.root.addEventListener("drop", (e) => {
       if (
@@ -226,7 +232,6 @@ export default class App {
     );
   }
 
-  #drag;
   dragEventListener() {
     this.root.addEventListener("dragstart", (e) => {
       if (e.target.classList.contains("ship")) {
@@ -240,7 +245,6 @@ export default class App {
     });
   }
 
-  #orientation;
   changeShipOrientation(ship) {
     const shipObj = this.activePlayer.board.getCorrespondingShip({
       index: ship.dataset.index,
@@ -273,7 +277,6 @@ export default class App {
     );
   }
 
-  #shipClickListener;
   onShipClickListener() {
     this.root.addEventListener("click", (e) => {
       if (
@@ -355,7 +358,6 @@ export default class App {
     return coordinateBuffer;
   }
 
-  //#attack
   attack(coor, playerToBeAttacked, table) {
     const cell = playerToBeAttacked.board.gridMap.get(coor);
     if (cell.isAttacked && this.controller.isGameOver) return;
@@ -365,8 +367,9 @@ export default class App {
     if (isAttackAHit && this.activePlayer instanceof Computer) {
       this.activePlayer.removeHitShipCorner(cell.getAdjacentCorner());
 
-      const nextPlayer = this.playerToReceiveAttack(this.activePlayer);
       setTimeout(() => {
+        const nextPlayer = this.playerToReceiveAttack(this.activePlayer);
+
         this.attack(
           this.activePlayer.attackRandomly(),
           nextPlayer,
@@ -533,21 +536,8 @@ export default class App {
 
   onLinkListener() {
     this.root.addEventListener("click", (e) => {
-      if (e.target.classList.contains("resetBtn")) {
-        this.onResetClick();
-      }
-      if (e.target.classList.contains("randomBtn")) {
-        this.onRandomClick();
-      }
-      if (e.target.classList.contains("readyBtn")) {
-        this.onReadyClick();
-      }
-      if (e.target.classList.contains("chooseBtn")) {
-        this.onChooseClick();
-      }
-      if (e.target.classList.contains("rematchBtn")) {
-        this.onRematchClick();
-      }
+      const action = this.actions[e.target.classList[0]];
+      if (action) action();
     });
   }
 

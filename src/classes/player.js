@@ -108,9 +108,3 @@ export class Computer extends Player {
     );
   }
 }
-// const com = new Player({});
-// com.setShipToDefault();
-// const res = generateRandomCluster({ size: 3 }, com.board);
-// const res = showNewCluster(["J,10"], { size: 3, orientation: "v" }, com.board);
-// console.log(res);
-// const res = isCellClearForOccupation("A,11", com.board);

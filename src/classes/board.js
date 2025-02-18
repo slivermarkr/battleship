@@ -193,25 +193,3 @@ export default class Gameboard {
     this.bufferMultiple = this.getBufferWithMoreThanOneCount();
   }
 }
-// for (const ship of board.shipList) {
-//   ship.isSet = true;
-// }
-
-// board.shipList[0].isSet = true;
-// const res = board.isFleetAllSet();
-// console.log(res);
-// board.setShip(board.shipList[0], ["A,1"]);
-// board.receiveAttack("A,1");
-// console.log(board.occupied);
-// console.log(board.shipList[0]);
-// console.log(board.getRemainingShipCount());
-// for (let i = 0; i < board.shipList.length; ++i) {
-//   board.shipList[i].isHit();
-//   board.shipList[i].isHit();
-//   board.shipList[i].isHit();
-//   board.shipList[i].isHit();
-//   console.log(board.shipList[i]);
-// }
-
-// console.log(board.getRemainingShipCount());
-// console.log(board.isFleetDefeated());
