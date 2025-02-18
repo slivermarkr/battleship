@@ -90,6 +90,28 @@ table {
   gap: 1.5rem;
   font-size: 15px;
 }
+
+.rightSide {
+  position: relative;
+}
+
+.rightSide .linkGrp {
+  position: absolute;
+  font-size: 1rem;
+  font-weight: bold;
+}
+.rightSide .linkGrp .readyBtn {
+  border: solid 2px black;
+  color: black;
+  background-color: antiquewhite;
+  padding: 0.5rem;
+  text-decoration: none;
+}
+.rightSide .linkGrp .readyBtn:hover {
+  border: solid 2px antiquewhite;
+  color: antiquewhite;
+  background-color: rgb(4, 4, 4);
+}
 /* .rightSide {
   display: none;
 } */

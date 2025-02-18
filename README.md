@@ -14,6 +14,5 @@
 
   - Smarter bot opponent
   - PvP feature
-  - Rematch message bug.
 
 - github logo: https://www.flaticon.com/free-icon/github-logo_25231
