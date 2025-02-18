@@ -205,13 +205,17 @@ export default class App {
   }
 
   dragEnd(ship) {
-    if (!this.dragState.isValid) {
+    if (!this.dragState.isValid && !this.controller.isResetMode) {
       this.setShipOnDrop(
         this.dragState.dragObject,
         this.dragState.dragItemPreviousCluster,
         this.activePlayer,
         this.dragState.dragItemEl
       );
+    } else if (!this.dragState.isValid && this.controller.isResetMode) {
+      this.root
+        .querySelector(".fleetSetupDiv")
+        .appendChild(this.dragState.dragItemEl);
     }
 
     UI.showShipOnDragEnd(ship);
