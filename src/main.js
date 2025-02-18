@@ -79,7 +79,11 @@ export default class App {
     cellElement.appendChild(shipEl);
   }
 
+<<<<<<< HEAD
   dragleave() {
+=======
+  dragleave(gridEl) {
+>>>>>>> 53954b7f68ef348963ea5070c52c83608b81d932
     UI.removeGridHL(
       this.dragState.dragoverCluster,
       "dragover",
