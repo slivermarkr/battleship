@@ -424,6 +424,7 @@ export default class App {
       activePlayer.name === cell.closest("table").id ||
       this.controller.isGameOver ||
       cell.classList.contains("revealed") ||
+      cell.classList.contains("hit") ||
       cell.classList.contains("miss")
     )
       return;
