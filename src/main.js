@@ -39,6 +39,13 @@ export default class App {
       rematchBtn: () => this.onRematchClick(),
     };
 
+    this.eventMap = {
+      dragover: (e) => this.dragover(e),
+      dragleave: (e) => this.dragleave(e),
+      dragstart: (e) => this.dragStart(e),
+      drop: (e) => this.drop(e),
+      dragend: (e) => this.dragEnd(e),
+    };
     this.activePlayer = undefined;
 
     this.root.insertAdjacentHTML("afterbegin", this.initHTML());
@@ -87,6 +94,28 @@ export default class App {
     );
   }
 
+  // ["dragover", "dragstart", "drop", "dragleave", "dragend"].forEach(eventName => {
+  //   this.root.addEventListener(eventName , eventMap[eventName])
+  // })
+
+  dropEventListener() {
+    ["drop", "dragover", "dragleave"].forEach((eventName) => {
+      this.root.addEventListener(eventName, (e) => {
+        if (eventName === "dragover") {
+          e.preventDefault();
+        }
+        if (
+          e.target.classList.contains("grid") &&
+          e.target.closest("table").id === this.activePlayer.name
+        ) {
+          this.eventMap[eventName](e.target);
+        } else {
+          this.dragState.isValid = false;
+        }
+      });
+    });
+  }
+
   dragover(gridEl) {
     const coor = gridEl.dataset.coordinate;
     const coordinates = this.dragState.dragItemPreviousCluster;
@@ -116,6 +145,7 @@ export default class App {
   }
 
   drop(gridEl) {
+    console.log("DROPED");
     if (!this.dragState.isValid) return;
     const coor = gridEl.dataset.coordinate;
     const cell = this.activePlayer.board.gridMap.get(coor);
@@ -149,40 +179,6 @@ export default class App {
     } else {
       this.dragState.isValid = false;
     }
-  }
-
-  dropEventListener() {
-    this.root.addEventListener("drop", (e) => {
-      if (
-        e.target.classList.contains("grid") &&
-        e.target.closest("table").id === this.activePlayer.name
-      ) {
-        this.drop(e.target);
-      }
-    });
-
-    this.root.addEventListener("dragover", (e) => {
-      e.preventDefault();
-      if (
-        e.target.classList.contains("grid") &&
-        e.target.closest("table").id === this.activePlayer.name
-      ) {
-        this.dragover(e.target);
-      } else {
-        this.dragState.isValid = false;
-      }
-    });
-
-    this.root.addEventListener("dragleave", (e) => {
-      if (
-        e.target.classList.contains("grid") &&
-        e.target.closest("table").id === this.activePlayer.name
-      ) {
-        this.dragleave(e.target);
-      } else {
-        this.dragState.isValid = false;
-      }
-    });
   }
 
   dragStart(ship) {
@@ -229,16 +225,10 @@ export default class App {
   }
 
   dragEventListener() {
-    this.root.addEventListener("dragstart", (e) => {
-      if (e.target.classList.contains("ship")) {
-        this.dragStart(e.target);
-      }
-    });
-
-    this.root.addEventListener("dragend", (e) => {
-      if (e.target.classList.contains("ship")) {
-        this.dragEnd(e.target);
-      }
+    ["dragstart", "dragend"].forEach((eventName) => {
+      this.root.addEventListener(eventName, (e) => {
+        this.eventMap[eventName](e.target);
+      });
     });
   }
 
@@ -425,7 +415,8 @@ export default class App {
       this.controller.isGameOver ||
       cell.classList.contains("revealed") ||
       cell.classList.contains("hit") ||
-      cell.classList.contains("miss")
+      cell.classList.contains("miss") ||
+      cell.closest("table").id === "You"
     )
       return;
     const nextPlayer = this.playerToReceiveAttack(this.activePlayer);
